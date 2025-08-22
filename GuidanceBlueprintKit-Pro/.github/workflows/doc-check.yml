@@ -1,0 +1,14 @@
+name: GuidanceDocCheck
+on:
+  push:
+    paths: ["**.md"]
+  pull_request:
+    paths: ["**.md"]
+jobs:
+  score:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Score guidance docs
+        run: |
+          python3 GuidanceBlueprintKit-Pro/docscore.py $(git ls-files "*.md" | tr '\n' ' ') | tee score.json || true

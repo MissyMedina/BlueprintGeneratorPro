@@ -1,0 +1,4 @@
+claim,evidence,status,notes
+JWT secrets rotated every 90 days,policy_doc.md §3.2; vault log 2025-07-10,✅,Auto-rotation job enabled
+All endpoints require auth,openapi.yaml paths/*/securitySchemes,⚠️,Two internal health probes allow anon
+Error budget SLO 99.9%,grafana dashboard link ❘ service SLO config,❌,No budget alarms configured

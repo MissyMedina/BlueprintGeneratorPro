@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  web:
+    build: ./web_app
+    ports:
+      - "8001:8001"
+    environment:
+      - VALIDATION_SERVICE_URL=http://validation:8002
+    volumes:
+      - ./storage:/app/storage
+    depends_on:
+      - validation
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  validation:
+    build: ./validation_service
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./temp:/app/temp
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  default:
+    name: blueprint-pro-network

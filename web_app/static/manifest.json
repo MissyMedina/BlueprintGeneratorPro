@@ -1,0 +1,31 @@
+{
+  "name": "Guidance Blueprint Kit Pro",
+  "short_name": "Blueprint Pro",
+  "description": "Professional documentation generator for PRDs, READMEs, MVPs, and validation documents",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iMjQiIGZpbGw9IiMyNTYzZWIiLz4KPHN2ZyB4PSI0OCIgeT0iNDgiIHdpZHRoPSI5NiIgaGVpZ2h0PSI5NiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+CjxwYXRoIGQ9Im0xNiAyIDQgNHYxNGE0IDQgMCAwIDEtNCA0SDZhNCA0IDAgMCAxLTQtNFY2YTQgNCAwIDAgMSA0LTRoMTBaIi8+CjxwYXRoIGQ9Ik0xMCAydjRhMiAyIDAgMCAwIDIgMmg0Ii8+CjxwYXRoIGQ9Ik0xMCAxNEg4Ii8+CjxwYXRoIGQ9Ik0xNiAxNEgxMCIvPgo8cGF0aCBkPSJNMTAgMThIOCIvPgo8cGF0aCBkPSJNMTYgMThIMTAiLz4KPC9zdmc+Cjwvc3ZnPgo=",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiByeD0iNjQiIGZpbGw9IiMyNTYzZWIiLz4KPHN2ZyB4PSIxMjgiIHk9IjEyOCIgd2lkdGg9IjI1NiIgaGVpZ2h0PSIyNTYiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPgo8cGF0aCBkPSJtMTYgMiA0IDR2MTRhNCA0IDAgMCAxLTQgNEg2YTQgNCAwIDAgMS00LTRWNmE0IDQgMCAwIDEgNC00aDEwWiIvPgo8cGF0aCBkPSJNMTAgMnY0YTIgMiAwIDAgMCAyIDJoNCIvPgo8cGF0aCBkPSJNMTAgMTRIOCIvPgo8cGF0aCBkPSJNMTYgMTRIMTAiLz4KPHN0aCBkPSJNMTAgMThIOCIvPgo8cGF0aCBkPSJNMTYgMThIMTAiLz4KPC9zdmc+Cjwvc3ZnPgo=",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["productivity", "developer", "business"],
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4MCIgaGVpZ2h0PSI3MjAiIHZpZXdCb3g9IjAgMCAxMjgwIDcyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjEyODAiIGhlaWdodD0iNzIwIiBmaWxsPSIjZjlmYWZiIi8+CjxyZWN0IHg9IjY0IiB5PSI2NCIgd2lkdGg9IjExNTIiIGhlaWdodD0iNTkyIiByeD0iMTYiIGZpbGw9IndoaXRlIiBzdHJva2U9IiNlNWU3ZWIiIHN0cm9rZS13aWR0aD0iMiIvPgo8dGV4dCB4PSI2NDAiIHk9IjM2MCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjQ4IiBmaWxsPSIjMzc0MTUxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5HdWlkYW5jZSBCbHVlcHJpbnQgS2l0IFBybzwvdGV4dD4KPC9zdmc+",
+      "sizes": "1280x720",
+      "type": "image/svg+xml",
+      "form_factor": "wide"
+    }
+  ]
+}

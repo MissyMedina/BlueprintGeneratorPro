@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guidance Blueprint Kit Pro</title>
+
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Professional documentation generator for PRDs, READMEs, MVPs, and validation documents">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Blueprint Pro">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/static/manifest.json">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .wizard-step {
+            min-height: 600px;
+        }
+        .project-type-card.selected {
+            border-color: #3B82F6;
+            background-color: #EFF6FF;
+        }
+        .doc-type-card.selected {
+            border-color: #059669;
+            background-color: #ECFDF5;
+            transform: scale(1.02);
+        }
+        .focus-card.selected {
+            border-color: #7C3AED;
+            background-color: #F3E8FF;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Loading Indicator -->
+    <div id="loadingIndicator" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 flex items-center space-x-3">
+            <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+            <span class="text-gray-700">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-6">
+                <div class="flex items-center">
+                    <i class="fas fa-rocket text-2xl mr-3"></i>
+                    <div>
+                        <h1 class="text-2xl font-bold">Guidance Blueprint Kit Pro</h1>
+                        <p class="text-blue-100 text-sm">Professional Documentation Generator</p>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <span class="text-blue-100">v1.0.0</span>
+                    <a href="https://github.com" class="text-blue-100 hover:text-white">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex space-x-8">
+                <button id="docGeneratorTab" onclick="showDocumentGenerator()" class="nav-tab active py-4 px-1 border-b-2 border-blue-500 font-medium text-sm text-blue-600">
+                    <i class="fas fa-file-alt mr-2"></i>Document Generator
+                </button>
+                <button id="validationServiceTab" onclick="showValidationService()" class="nav-tab py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                    <i class="fas fa-shield-alt mr-2"></i>Validation Service
+                </button>
+                <div class="flex-1"></div>
+                <div class="flex items-center space-x-4 py-4">
+                    <a href="http://localhost:8002/docs" target="_blank" class="text-gray-500 hover:text-blue-600 text-sm">
+                        <i class="fas fa-book mr-1"></i>API Docs
+                    </a>
+                    <div id="serviceStatusNav" class="flex items-center space-x-2">
+                        <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                        <span class="text-xs text-gray-500">Services Active</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+
+        <!-- Document Generator Section -->
+        <div id="documentGeneratorSection">
+            <!-- Hero Section -->
+            <div class="text-center mb-12">
+            <h2 class="text-4xl font-extrabold text-gray-900 mb-4">
+                Interactive Documentation Generator
+            </h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+                Answer a few questions and watch as we generate professional documentation tailored to your project.
+                No technical knowledge required - just describe what you're building!
+            </p>
+
+            <!-- Progress Indicator -->
+            <div class="max-w-md mx-auto mb-8">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm font-medium text-blue-600">Step <span id="currentStepNum">1</span> of 4</span>
+                    <span class="text-sm text-gray-500"><span id="progressPercent">25</span>% Complete</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div id="progressBar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 25%"></div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="flex justify-center space-x-8 text-sm">
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-blue-600">2 min</div>
+                    <div class="text-gray-500">Average Time</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-green-600">5+</div>
+                    <div class="text-gray-500">Document Types</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-purple-600">Auto</div>
+                    <div class="text-gray-500">Quality Check</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Primary Action Choice -->
+        <div class="mb-12">
+            <h3 class="text-2xl font-semibold text-gray-900 text-center mb-8">What would you like to do?</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <!-- Create New Documentation -->
+                <div class="primary-action-card bg-gradient-to-br from-blue-50 to-indigo-100 p-8 rounded-2xl cursor-pointer border-3 border-transparent hover:border-blue-500 transition-all transform hover:scale-105" data-action="create">
+                    <div class="text-center">
+                        <div class="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-plus-circle text-white text-3xl"></i>
+                        </div>
+                        <h4 class="text-2xl font-bold text-gray-900 mb-4">Create New Documentation</h4>
+                        <p class="text-gray-600 mb-6">Build PRDs, READMEs, MVP plans, or security audits for your new or existing projects</p>
+                        <div class="flex flex-wrap justify-center gap-2 text-sm">
+                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full">PRD Generator</span>
+                            <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full">README Docs</span>
+                            <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full">MVP Planning</span>
+                            <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full">Security Audit</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Validate Existing Application -->
+                <div class="primary-action-card bg-gradient-to-br from-orange-50 to-red-100 p-8 rounded-2xl cursor-pointer border-3 border-transparent hover:border-orange-500 transition-all transform hover:scale-105" data-action="validate">
+                    <div class="text-center">
+                        <div class="w-20 h-20 bg-orange-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-search-plus text-white text-3xl"></i>
+                        </div>
+                        <h4 class="text-2xl font-bold text-gray-900 mb-4">🔍 Validate Existing Application</h4>
+                        <p class="text-gray-600 mb-6">Upload your codebase and get comprehensive analysis of what it is, how well it's built, and what could be improved</p>
+                        <div class="flex flex-wrap justify-center gap-2 text-sm">
+                            <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full">Auto-detect Type</span>
+                            <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full">Security Analysis</span>
+                            <span class="bg-pink-100 text-pink-800 px-3 py-1 rounded-full">Quality Assessment</span>
+                            <span class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full">Improvement Plan</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive Wizard -->
+        <div id="wizardContainer" class="max-w-4xl mx-auto hidden">
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+
+                <!-- Step 1: What are you building? -->
+                <div id="step1" class="wizard-step p-8">
+                    <div class="text-center mb-8">
+                        <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-lightbulb text-blue-600 text-3xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">What are you building?</h3>
+                        <p class="text-gray-600">Tell us about your project so we can create the perfect documentation</p>
+                    </div>
+
+                    <div class="max-w-2xl mx-auto space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Project Name</label>
+                            <input type="text" id="projectNameInput"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                                   placeholder="e.g., My Awesome App, E-commerce Platform, Banking API">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-3">What components does your project need? (Select all that apply)</label>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                <div class="component-card p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all" data-component="frontend">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" class="mr-2" id="comp-frontend">
+                                        <div>
+                                            <i class="fas fa-palette text-blue-600 text-lg mr-2"></i>
+                                            <span class="font-medium">Frontend/UI</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-xs text-gray-500 mt-1 ml-6">Web interface, mobile app UI</div>
+                                </div>
+
+                                <div class="component-card p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all" data-component="backend">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" class="mr-2" id="comp-backend">
+                                        <div>
+                                            <i class="fas fa-server text-green-600 text-lg mr-2"></i>
+                                            <span class="font-medium">Backend/API</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-xs text-gray-500 mt-1 ml-6">Server, database, business logic</div>
+                                </div>
+
+                                <div class="component-card p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all" data-component="mobile">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" class="mr-2" id="comp-mobile">
+                                        <div>
+                                            <i class="fas fa-mobile-alt text-purple-600 text-lg mr-2"></i>
+                                            <span class="font-medium">Mobile App</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-xs text-gray-500 mt-1 ml-6">iOS, Android, React Native</div>
+                                </div>
+
+                                <div class="component-card p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all" data-component="desktop">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" class="mr-2" id="comp-desktop">
+                                        <div>
+                                            <i class="fas fa-desktop text-orange-600 text-lg mr-2"></i>
+                                            <span class="font-medium">Desktop App</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-xs text-gray-500 mt-1 ml-6">Windows, Mac, Linux</div>
+                                </div>
+
+                                <div class="component-card p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all" data-component="database">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" class="mr-2" id="comp-database">
+                                        <div>
+                                            <i class="fas fa-database text-red-600 text-lg mr-2"></i>
+                                            <span class="font-medium">Database</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-xs text-gray-500 mt-1 ml-6">Data storage, analytics</div>
+                                </div>
+
+                                <div class="component-card p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all" data-component="ai">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" class="mr-2" id="comp-ai">
+                                        <div>
+                                            <i class="fas fa-brain text-pink-600 text-lg mr-2"></i>
+                                            <span class="font-medium">AI/ML</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-xs text-gray-500 mt-1 ml-6">Machine learning, AI features</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Smart Suggestions -->
+                        <div id="smartSuggestions" class="hidden bg-blue-50 rounded-lg p-4">
+                            <h4 class="font-medium text-blue-900 mb-2">
+                                <i class="fas fa-lightbulb mr-2"></i>Smart Suggestions
+                            </h4>
+                            <div id="suggestionsList" class="text-sm text-blue-800">
+                                <!-- Populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Brief Description (Optional)</label>
+                            <textarea id="projectDescription"
+                                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                      rows="3"
+                                      placeholder="What does your project do? Who is it for?"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end mt-8">
+                        <button onclick="app.nextStep()" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all">
+                            Next Step <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2: What do you need? -->
+                <div id="step2" class="wizard-step hidden p-8">
+                    <div class="text-center mb-8">
+                        <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-tasks text-green-600 text-3xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">What documentation do you need?</h3>
+                        <p class="text-gray-600">Choose the type of document that best fits your current needs</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                        <div class="doc-type-card bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl cursor-pointer border-2 border-transparent hover:border-blue-500 transition-all" data-type="prd">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-file-alt text-white text-xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-lg font-semibold text-gray-900 mb-2">Product Requirements (PRD)</h4>
+                                    <p class="text-sm text-gray-600 mb-3">Perfect for planning new features, defining requirements, and getting stakeholder alignment</p>
+                                    <div class="text-xs text-blue-600 font-medium">✓ Feature specs ✓ Acceptance criteria ✓ User stories</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="doc-type-card bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl cursor-pointer border-2 border-transparent hover:border-green-500 transition-all" data-type="readme">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-book text-white text-xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-lg font-semibold text-gray-900 mb-2">README Documentation</h4>
+                                    <p class="text-sm text-gray-600 mb-3">Great for open source projects, explaining how to install, use, and contribute</p>
+                                    <div class="text-xs text-green-600 font-medium">✓ Installation guide ✓ Usage examples ✓ API docs</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="doc-type-card bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl cursor-pointer border-2 border-transparent hover:border-purple-500 transition-all" data-type="mvp">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-rocket text-white text-xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-lg font-semibold text-gray-900 mb-2">MVP Planning</h4>
+                                    <p class="text-sm text-gray-600 mb-3">Ideal for startups and new projects to define minimum viable product scope</p>
+                                    <div class="text-xs text-purple-600 font-medium">✓ Core features ✓ Success metrics ✓ Launch plan</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="doc-type-card bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-xl cursor-pointer border-2 border-transparent hover:border-red-500 transition-all" data-type="audit">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-shield-alt text-white text-xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-lg font-semibold text-gray-900 mb-2">Security & Compliance Audit</h4>
+                                    <p class="text-sm text-gray-600 mb-3">Essential for validating security, compliance, and quality standards</p>
+                                    <div class="text-xs text-red-600 font-medium">✓ Security check ✓ GDPR/SOC2 ✓ Code quality</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="flex justify-between mt-8">
+                        <button onclick="app.prevStep()" class="bg-gray-300 text-gray-700 px-8 py-3 rounded-lg font-semibold hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all">
+                            <i class="fas fa-arrow-left mr-2"></i> Back
+                        </button>
+                        <button onclick="app.nextStep()" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all">
+                            Next Step <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Customize your focus -->
+                <div id="step3" class="wizard-step hidden p-8">
+                    <div class="text-center mb-8">
+                        <div class="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-sliders-h text-purple-600 text-3xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Customize your focus</h3>
+                        <p class="text-gray-600">Tell us what aspects are most important for your project</p>
+                    </div>
+
+                    <div class="max-w-3xl mx-auto space-y-8">
+                        <!-- Focus Areas -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-4">What's your primary focus? (Choose one)</label>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div class="focus-card p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-purple-500 hover:bg-purple-50 transition-all text-center" data-focus="security">
+                                    <i class="fas fa-shield-alt text-red-600 text-2xl mb-2"></i>
+                                    <div class="font-medium text-sm">Security</div>
+                                    <div class="text-xs text-gray-500">OWASP, compliance</div>
+                                </div>
+                                <div class="focus-card p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-purple-500 hover:bg-purple-50 transition-all text-center" data-focus="performance">
+                                    <i class="fas fa-tachometer-alt text-green-600 text-2xl mb-2"></i>
+                                    <div class="font-medium text-sm">Performance</div>
+                                    <div class="text-xs text-gray-500">Speed, scalability</div>
+                                </div>
+                                <div class="focus-card p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-purple-500 hover:bg-purple-50 transition-all text-center" data-focus="ux">
+                                    <i class="fas fa-users text-blue-600 text-2xl mb-2"></i>
+                                    <div class="font-medium text-sm">User Experience</div>
+                                    <div class="text-xs text-gray-500">Usability, accessibility</div>
+                                </div>
+                                <div class="focus-card p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-purple-500 hover:bg-purple-50 transition-all text-center" data-focus="app">
+                                    <i class="fas fa-globe text-purple-600 text-2xl mb-2"></i>
+                                    <div class="font-medium text-sm">Complete App</div>
+                                    <div class="text-xs text-gray-500">All aspects</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Questions based on doc type -->
+                        <div id="dynamicQuestions" class="space-y-6">
+                            <!-- Questions will be populated by JavaScript -->
+                        </div>
+
+                        <!-- Optional: Upload Code -->
+                        <div class="bg-gray-50 rounded-lg p-6">
+                            <h4 class="font-medium text-gray-900 mb-3">
+                                <i class="fas fa-code mr-2"></i>Have code to analyze? (Optional)
+                            </h4>
+                            <p class="text-sm text-gray-600 mb-4">Upload your repository and we'll automatically extract relevant information</p>
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-purple-400 transition-colors">
+                                <input type="file" id="repoUpload" accept=".zip,.tar.gz,.tar" class="hidden">
+                                <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 mb-2"></i>
+                                <p class="text-sm text-gray-600 mb-2">Drag & drop or click to upload</p>
+                                <button type="button" onclick="document.getElementById('repoUpload').click()"
+                                        class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 text-sm">
+                                    Choose File
+                                </button>
+                                <p class="text-xs text-gray-500 mt-2">Supports ZIP, TAR.GZ files</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between mt-8">
+                        <button onclick="app.prevStep()" class="bg-gray-300 text-gray-700 px-8 py-3 rounded-lg font-semibold hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all">
+                            <i class="fas fa-arrow-left mr-2"></i> Back
+                        </button>
+                        <button onclick="app.nextStep()" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all">
+                            Next Step <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Review & Generate -->
+                <div id="step4" class="wizard-step hidden p-8">
+                    <div class="text-center mb-8">
+                        <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-check text-green-600 text-3xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Review & Generate</h3>
+                        <p class="text-gray-600">Everything looks good? Let's create your documentation!</p>
+                    </div>
+
+                    <div class="max-w-2xl mx-auto">
+                        <!-- Summary Card -->
+                        <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 mb-6">
+                            <h4 class="font-semibold text-gray-900 mb-4">Your Document Summary</h4>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <span class="text-gray-600">Project:</span>
+                                    <div id="summaryProject" class="font-medium">-</div>
+                                </div>
+                                <div>
+                                    <span class="text-gray-600">Type:</span>
+                                    <div id="summaryType" class="font-medium">-</div>
+                                </div>
+                                <div>
+                                    <span class="text-gray-600">Focus:</span>
+                                    <div id="summaryFocus" class="font-medium">-</div>
+                                </div>
+                                <div>
+                                    <span class="text-gray-600">Estimated Time:</span>
+                                    <div class="font-medium text-green-600">~30 seconds</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- What you'll get -->
+                        <div class="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+                            <h4 class="font-semibold text-gray-900 mb-4">What you'll get:</h4>
+                            <div id="deliverablesList" class="space-y-2 text-sm">
+                                <!-- Populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <!-- Generate Button -->
+                        <button onclick="app.generateDocument()"
+                                class="w-full bg-gradient-to-r from-green-500 to-blue-600 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-green-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all transform hover:scale-105">
+                            <i class="fas fa-magic mr-2"></i>
+                            <span id="generateButtonText">Generate My Documentation</span>
+                        </button>
+
+                        <!-- Loading State -->
+                        <div id="generatingState" class="hidden text-center mt-6">
+                            <div class="inline-flex items-center px-4 py-2 bg-blue-100 rounded-lg">
+                                <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-3"></div>
+                                <span class="text-blue-800 font-medium">Creating your documentation...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between mt-8">
+                        <button onclick="app.prevStep()" class="bg-gray-300 text-gray-700 px-8 py-3 rounded-lg font-semibold hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all">
+                            <i class="fas fa-arrow-left mr-2"></i> Back
+                        </button>
+                        <button onclick="app.startOver()" class="bg-gray-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all">
+                            <i class="fas fa-redo mr-2"></i> Start Over
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        </div>
+
+        <!-- Validation Service Section -->
+        <div id="validationServiceSection" class="hidden">
+            <!-- Service Info -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-shield-alt text-orange-600 text-2xl"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Project Validation Service</h2>
+                    <p class="text-xl text-gray-600">Professional codebase analysis and validation for any project</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="text-center">
+                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-shield-alt text-blue-600 text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-900">Security Analysis</h3>
+                        <p class="text-sm text-gray-600">Authentication, encryption, validation</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-code-branch text-green-600 text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-900">Quality Assessment</h3>
+                        <p class="text-sm text-gray-600">Testing, documentation, best practices</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-sitemap text-purple-600 text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-900">Architecture Review</h3>
+                        <p class="text-sm text-gray-600">Patterns, structure, scalability</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-lightbulb text-orange-600 text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-900">Recommendations</h3>
+                        <p class="text-sm text-gray-600">Actionable improvement suggestions</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Validation Methods -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <!-- Upload Method -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-upload text-blue-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-900">Upload Project Archive</h3>
+                            <p class="text-gray-600">Upload ZIP or TAR file for analysis</p>
+                        </div>
+                    </div>
+
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors" id="uploadArea">
+                        <input type="file" id="fileInput" accept=".zip,.tar,.tar.gz" class="hidden">
+                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                        <p class="text-lg font-medium text-gray-700 mb-2">Drop your project archive here</p>
+                        <p class="text-gray-500 mb-4">or click to browse files</p>
+                        <button onclick="document.getElementById('fileInput').click()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            Choose File
+                        </button>
+                        <p class="text-xs text-gray-400 mt-3">Supports: .zip, .tar.gz, .tar (max 100MB)</p>
+                    </div>
+
+                    <div class="mt-4">
+                        <input type="text" id="projectName" placeholder="Project Name (optional)" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+
+                    <button onclick="uploadProject()" class="w-full mt-4 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+                        <i class="fas fa-play mr-2"></i>Start Validation
+                    </button>
+                </div>
+
+                <!-- Git Repository Method -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                            <i class="fab fa-git-alt text-green-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-900">Validate Git Repository</h3>
+                            <p class="text-gray-600">Analyze any public Git repository</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Repository URL</label>
+                            <input type="url" id="gitUrl" placeholder="https://github.com/user/repo.git" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Branch</label>
+                                <input type="text" id="gitBranch" value="main" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Project Name</label>
+                                <input type="text" id="gitProjectName" placeholder="Auto-detected" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="validateGitRepo()" class="w-full mt-6 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold">
+                        <i class="fab fa-git-alt mr-2"></i>Validate Repository
+                    </button>
+                </div>
+            </div>
+
+            <!-- Validation Results -->
+            <div id="validationResults" class="hidden">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-2xl font-semibold text-gray-900">Validation Results</h3>
+                        <div id="validationStatus" class="flex items-center space-x-2">
+                            <div class="w-3 h-3 bg-yellow-400 rounded-full animate-pulse"></div>
+                            <span class="text-sm text-gray-600">Processing...</span>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div id="progressSection" class="mb-6">
+                        <div class="flex justify-between text-sm text-gray-600 mb-2">
+                            <span>Progress</span>
+                            <span id="progressText">0%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div id="progressBar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Scores -->
+                    <div id="scoresSection" class="hidden grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div class="text-center p-4 bg-red-50 rounded-lg">
+                            <div class="text-3xl font-bold text-red-600" id="securityScore">-</div>
+                            <div class="text-sm text-gray-600">Security Score</div>
+                        </div>
+                        <div class="text-center p-4 bg-green-50 rounded-lg">
+                            <div class="text-3xl font-bold text-green-600" id="qualityScore">-</div>
+                            <div class="text-sm text-gray-600">Quality Score</div>
+                        </div>
+                        <div class="text-center p-4 bg-purple-50 rounded-lg">
+                            <div class="text-3xl font-bold text-purple-600" id="architectureScore">-</div>
+                            <div class="text-sm text-gray-600">Architecture Score</div>
+                        </div>
+                    </div>
+
+                    <!-- Recommendations -->
+                    <div id="recommendationsSection" class="hidden">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4">Top Recommendations</h4>
+                        <div id="recommendationsList" class="space-y-2"></div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div id="actionsSection" class="hidden flex space-x-4 mt-6">
+                        <button onclick="downloadValidationReport()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-download mr-2"></i>Download Report
+                        </button>
+                        <button onclick="startNewValidation()" class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-plus mr-2"></i>New Validation
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultContainer" class="mt-8">
+            <!-- Results will be displayed here -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <p class="text-gray-300">
+                    Built with ❤️ for developers who value quality documentation
+                </p>
+                <p class="text-gray-400 text-sm mt-2">
+                    Guidance Blueprint Kit Pro © 2025
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/static/app.js"></script>
+
+    <!-- PWA Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/static/sw.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+
+                        // Check for updates
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // New content is available, show update notification
+                                    if (confirm('New version available! Reload to update?')) {
+                                        window.location.reload();
+                                    }
+                                }
+                            });
+                        });
+                    })
+                    .catch(function(err) {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+
+        // PWA Install Prompt
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+
+            // Show install button or banner
+            const installBanner = document.createElement('div');
+            installBanner.innerHTML = `
+                <div class="fixed bottom-4 right-4 bg-blue-600 text-white p-4 rounded-lg shadow-lg z-50">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-download"></i>
+                        <span>Install Blueprint Pro for offline access</span>
+                        <button onclick="installPWA()" class="bg-white text-blue-600 px-3 py-1 rounded text-sm font-semibold">Install</button>
+                        <button onclick="this.parentElement.parentElement.remove()" class="text-white hover:text-gray-200">×</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(installBanner);
+        });
+
+        function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                    }
+                    deferredPrompt = null;
+                });
+            }
+        }
+    </script>
+</body>
+</html>

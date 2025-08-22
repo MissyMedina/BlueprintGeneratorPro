@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Validation Service</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 py-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-shield-alt text-3xl"></i>
+                    <div>
+                        <h1 class="text-2xl font-bold">Project Validation Service</h1>
+                        <p class="text-blue-100">Professional codebase analysis and validation</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="http://localhost:8002/docs" target="_blank" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-book mr-2"></i>API Docs
+                    </a>
+                    <div id="serviceStatus" class="flex items-center space-x-2">
+                        <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                        <span class="text-sm">Service Active</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 py-8">
+        <!-- Service Info -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-shield-alt text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-900">Security Analysis</h3>
+                    <p class="text-sm text-gray-600">Authentication, encryption, validation</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-code-branch text-green-600 text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-900">Quality Assessment</h3>
+                    <p class="text-sm text-gray-600">Testing, documentation, best practices</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-sitemap text-purple-600 text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-900">Architecture Review</h3>
+                    <p class="text-sm text-gray-600">Patterns, structure, scalability</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-lightbulb text-orange-600 text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-900">Recommendations</h3>
+                    <p class="text-sm text-gray-600">Actionable improvement suggestions</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Validation Methods -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Upload Method -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex items-center space-x-3 mb-6">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-upload text-blue-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-900">Upload Project Archive</h3>
+                        <p class="text-gray-600">Upload ZIP or TAR file for analysis</p>
+                    </div>
+                </div>
+                
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors" id="uploadArea">
+                    <input type="file" id="fileInput" accept=".zip,.tar,.tar.gz" class="hidden">
+                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                    <p class="text-lg font-medium text-gray-700 mb-2">Drop your project archive here</p>
+                    <p class="text-gray-500 mb-4">or click to browse files</p>
+                    <button onclick="document.getElementById('fileInput').click()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        Choose File
+                    </button>
+                    <p class="text-xs text-gray-400 mt-3">Supports: .zip, .tar.gz, .tar (max 100MB)</p>
+                </div>
+                
+                <div class="mt-4">
+                    <input type="text" id="projectName" placeholder="Project Name (optional)" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+                
+                <button onclick="uploadProject()" class="w-full mt-4 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+                    <i class="fas fa-play mr-2"></i>Start Validation
+                </button>
+            </div>
+
+            <!-- Git Repository Method -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex items-center space-x-3 mb-6">
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                        <i class="fab fa-git-alt text-green-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-900">Validate Git Repository</h3>
+                        <p class="text-gray-600">Analyze any public Git repository</p>
+                    </div>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Repository URL</label>
+                        <input type="url" id="gitUrl" placeholder="https://github.com/user/repo.git" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Branch</label>
+                            <input type="text" id="gitBranch" value="main" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Project Name</label>
+                            <input type="text" id="gitProjectName" placeholder="Auto-detected" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                        </div>
+                    </div>
+                </div>
+                
+                <button onclick="validateGitRepo()" class="w-full mt-6 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold">
+                    <i class="fab fa-git-alt mr-2"></i>Validate Repository
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="hidden">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-2xl font-semibold text-gray-900">Validation Results</h3>
+                    <div id="validationStatus" class="flex items-center space-x-2">
+                        <div class="w-3 h-3 bg-yellow-400 rounded-full animate-pulse"></div>
+                        <span class="text-sm text-gray-600">Processing...</span>
+                    </div>
+                </div>
+                
+                <!-- Progress Bar -->
+                <div id="progressSection" class="mb-6">
+                    <div class="flex justify-between text-sm text-gray-600 mb-2">
+                        <span>Progress</span>
+                        <span id="progressText">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div id="progressBar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <!-- Scores -->
+                <div id="scoresSection" class="hidden grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="text-center p-4 bg-red-50 rounded-lg">
+                        <div class="text-3xl font-bold text-red-600" id="securityScore">-</div>
+                        <div class="text-sm text-gray-600">Security Score</div>
+                    </div>
+                    <div class="text-center p-4 bg-green-50 rounded-lg">
+                        <div class="text-3xl font-bold text-green-600" id="qualityScore">-</div>
+                        <div class="text-sm text-gray-600">Quality Score</div>
+                    </div>
+                    <div class="text-center p-4 bg-purple-50 rounded-lg">
+                        <div class="text-3xl font-bold text-purple-600" id="architectureScore">-</div>
+                        <div class="text-sm text-gray-600">Architecture Score</div>
+                    </div>
+                </div>
+                
+                <!-- Recommendations -->
+                <div id="recommendationsSection" class="hidden">
+                    <h4 class="text-lg font-semibold text-gray-900 mb-4">Top Recommendations</h4>
+                    <div id="recommendationsList" class="space-y-2"></div>
+                </div>
+                
+                <!-- Actions -->
+                <div id="actionsSection" class="hidden flex space-x-4 mt-6">
+                    <button onclick="downloadReport()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-download mr-2"></i>Download Report
+                    </button>
+                    <button onclick="startNewValidation()" class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-plus mr-2"></i>New Validation
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let currentValidationId = null;
+        const API_BASE = 'http://localhost:8002';
+
+        // Check service status on load
+        async function checkServiceStatus() {
+            try {
+                const response = await fetch(`${API_BASE}/`);
+                const data = await response.json();
+                document.getElementById('serviceStatus').innerHTML = `
+                    <div class="w-3 h-3 bg-green-400 rounded-full"></div>
+                    <span class="text-sm">${data.service} v${data.version}</span>
+                `;
+            } catch (error) {
+                document.getElementById('serviceStatus').innerHTML = `
+                    <div class="w-3 h-3 bg-red-400 rounded-full"></div>
+                    <span class="text-sm">Service Offline</span>
+                `;
+            }
+        }
+
+        // Upload project file
+        async function uploadProject() {
+            const fileInput = document.getElementById('fileInput');
+            const projectName = document.getElementById('projectName').value;
+            
+            if (!fileInput.files[0]) {
+                alert('Please select a file to upload');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            if (projectName) formData.append('project_name', projectName);
+            
+            try {
+                showResults();
+                const response = await fetch(`${API_BASE}/validate/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                currentValidationId = result.validation_id;
+                pollValidationStatus();
+            } catch (error) {
+                alert('Upload failed: ' + error.message);
+                hideResults();
+            }
+        }
+
+        // Validate Git repository
+        async function validateGitRepo() {
+            const gitUrl = document.getElementById('gitUrl').value;
+            const branch = document.getElementById('gitBranch').value;
+            const projectName = document.getElementById('gitProjectName').value;
+            
+            if (!gitUrl) {
+                alert('Please enter a Git repository URL');
+                return;
+            }
+            
+            try {
+                showResults();
+                const response = await fetch(`${API_BASE}/validate/git`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        git_url: gitUrl,
+                        branch: branch || 'main',
+                        project_name: projectName
+                    })
+                });
+                
+                const result = await response.json();
+                currentValidationId = result.validation_id;
+                pollValidationStatus();
+            } catch (error) {
+                alert('Validation failed: ' + error.message);
+                hideResults();
+            }
+        }
+
+        // Poll validation status
+        async function pollValidationStatus() {
+            if (!currentValidationId) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/validate/${currentValidationId}/status`);
+                const status = await response.json();
+                
+                updateProgress(status.progress, status.message);
+                
+                if (status.status === 'completed') {
+                    await loadResults();
+                } else if (status.status === 'failed') {
+                    updateStatus('❌ Validation Failed', status.message);
+                } else {
+                    setTimeout(pollValidationStatus, 2000);
+                }
+            } catch (error) {
+                updateStatus('❌ Error', error.message);
+            }
+        }
+
+        // Load validation results
+        async function loadResults() {
+            try {
+                const response = await fetch(`${API_BASE}/validate/${currentValidationId}/results`);
+                const results = await response.json();
+                
+                displayResults(results);
+            } catch (error) {
+                updateStatus('❌ Error loading results', error.message);
+            }
+        }
+
+        // Display results
+        function displayResults(results) {
+            updateStatus('✅ Validation Complete', 'Analysis completed successfully');
+            
+            // Show scores
+            document.getElementById('securityScore').textContent = results.scores.security;
+            document.getElementById('qualityScore').textContent = results.scores.quality;
+            document.getElementById('architectureScore').textContent = results.scores.architecture;
+            document.getElementById('scoresSection').classList.remove('hidden');
+            
+            // Show recommendations
+            const recommendationsList = document.getElementById('recommendationsList');
+            recommendationsList.innerHTML = '';
+            results.recommendations.slice(0, 5).forEach(rec => {
+                const div = document.createElement('div');
+                div.className = 'flex items-start space-x-2 p-3 bg-gray-50 rounded-lg';
+                div.innerHTML = `
+                    <i class="fas fa-lightbulb text-yellow-500 mt-1"></i>
+                    <span class="text-sm text-gray-700">${rec}</span>
+                `;
+                recommendationsList.appendChild(div);
+            });
+            document.getElementById('recommendationsSection').classList.remove('hidden');
+            
+            // Show actions
+            document.getElementById('actionsSection').classList.remove('hidden');
+            document.getElementById('progressSection').classList.add('hidden');
+        }
+
+        // Helper functions
+        function showResults() {
+            document.getElementById('resultsSection').classList.remove('hidden');
+            document.getElementById('progressSection').classList.remove('hidden');
+            document.getElementById('scoresSection').classList.add('hidden');
+            document.getElementById('recommendationsSection').classList.add('hidden');
+            document.getElementById('actionsSection').classList.add('hidden');
+        }
+
+        function hideResults() {
+            document.getElementById('resultsSection').classList.add('hidden');
+        }
+
+        function updateProgress(progress, message) {
+            document.getElementById('progressBar').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = `${progress}%`;
+            updateStatus('🔄 Processing', message);
+        }
+
+        function updateStatus(status, message) {
+            document.getElementById('validationStatus').innerHTML = `
+                <span class="text-sm font-medium">${status}</span>
+                <span class="text-xs text-gray-500">${message}</span>
+            `;
+        }
+
+        async function downloadReport() {
+            if (!currentValidationId) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/validate/${currentValidationId}/report/download`);
+                const blob = await response.blob();
+                
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `validation-report-${currentValidationId}.md`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } catch (error) {
+                alert('Download failed: ' + error.message);
+            }
+        }
+
+        function startNewValidation() {
+            currentValidationId = null;
+            hideResults();
+            document.getElementById('fileInput').value = '';
+            document.getElementById('projectName').value = '';
+            document.getElementById('gitUrl').value = '';
+            document.getElementById('gitProjectName').value = '';
+        }
+
+        // File drag and drop
+        const uploadArea = document.getElementById('uploadArea');
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('border-blue-400', 'bg-blue-50');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('border-blue-400', 'bg-blue-50');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('border-blue-400', 'bg-blue-50');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                document.getElementById('fileInput').files = files;
+            }
+        });
+
+        // Initialize
+        checkServiceStatus();
+    </script>
+</body>
+</html>

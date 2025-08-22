@@ -1,0 +1,34 @@
+{
+  "full-eval": {
+    "modules": [
+      "claims",
+      "prd",
+      "operator",
+      "appendices"
+    ],
+    "claims_scope": "app"
+  },
+  "sec-audit": {
+    "modules": [
+      "claims",
+      "appendices"
+    ],
+    "claims_scope": "security"
+  },
+  "ops-readiness": {
+    "modules": [
+      "claims",
+      "operator",
+      "appendices"
+    ],
+    "claims_scope": "reliability"
+  },
+  "ux-review": {
+    "modules": [
+      "claims",
+      "prd",
+      "appendices"
+    ],
+    "claims_scope": "ux"
+  }
+}

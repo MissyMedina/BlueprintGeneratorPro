@@ -1,0 +1,26 @@
+{
+  "GuidanceClaimsRow": {
+    "prefix": "claimsrow",
+    "body": [
+      "| ${1:claim} | ${2:evidence} | ${3:\u2705} | ${4:notes} |"
+    ],
+    "description": "Insert a claims table row"
+  },
+  "GuidanceFeatureSpec": {
+    "prefix": "featurespec",
+    "body": [
+      "### 2.2 Feature Spec \u2014 ${1:name}",
+      "**Feature:** ${1:name}  ",
+      "**Motivation:** ${2:why}  ",
+      "**Requirements (MUST/SHOULD/MAY):**",
+      "- MUST: ${3:...}",
+      "- SHOULD: ${4:...}",
+      "- MAY: ${5:...}",
+      "**API/UX Notes:** ${6:...}",
+      "**Dependencies & Risks:** ${7:...}",
+      "**Acceptance Tests:** ${8:...}",
+      ""
+    ],
+    "description": "Insert a PRD feature spec section"
+  }
+}
