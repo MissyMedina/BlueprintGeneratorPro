@@ -233,6 +233,7 @@ Your repository is now completely set up with:
 ---
 
 **For questions or support:**
-- **Email**: support@blueprintgeneratorpro.com
-- **Documentation**: https://docs.blueprintgeneratorpro.com
-- **Repository**: https://github.com/yourusername/BlueprintGeneratorPro
+- **Email**: Bentleywinstonco@outlook.com
+- **Documentation**: [View Documentation](docs/)
+- **Repository**: [BlueprintGeneratorPro](https://github.com/yourusername/BlueprintGeneratorPro)
+- **Support Development**: [Buy Me a Coffee](https://buymeacoffee.com/bentleywinston)

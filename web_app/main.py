@@ -66,7 +66,7 @@ def custom_rate_limiter(request: Request, calls: int = 10, period: int = 60):
     rate_limit_storage[client_ip].append(current_time)
 
 app = FastAPI(
-    title="Guidance Blueprint Kit Pro",
+    title="Blueprint Generator Pro",
     description="Professional documentation generator for PRDs, READMEs, MVPs, and validation documents",
     version="1.0.0"
 )

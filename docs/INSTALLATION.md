@@ -416,9 +416,10 @@ If you encounter issues during installation:
 4. **Contact support** with detailed error information
 
 **Support Channels:**
-- **Email**: support@blueprintgeneratorpro.com
-- **Documentation**: https://docs.blueprintgeneratorpro.com
-- **GitHub Issues**: https://github.com/yourusername/BlueprintGeneratorPro/issues
+- **Email**: Bentleywinstonco@outlook.com
+- **Documentation**: [View Documentation](../docs/)
+- **GitHub Issues**: [Report Issues](https://github.com/yourusername/BlueprintGeneratorPro/issues)
+- **Support Development**: [Buy Me a Coffee](https://buymeacoffee.com/bentleywinston)
 
 ## ✅ **Next Steps**
 
@@ -426,8 +427,8 @@ After successful installation:
 
 1. **Read the [User Guide](USER_GUIDE.md)** to learn how to use the platform
 2. **Configure your [API settings](API.md)** for integrations
-3. **Set up [monitoring](MONITORING.md)** for production environments
-4. **Review [security best practices](SECURITY.md)**
+3. **Review [security best practices](SECURITY.md)**
+4. **Support the project** by [buying me a coffee](https://buymeacoffee.com/bentleywinston)
 
 ---
 

@@ -301,10 +301,10 @@ done
 - **📧 Email Support**: Direct assistance from our team
 
 ### **Contact Information**
-- **General Support**: support@blueprintgeneratorpro.com
-- **Technical Issues**: technical@blueprintgeneratorpro.com
-- **Feature Requests**: features@blueprintgeneratorpro.com
-- **Sales Inquiries**: sales@blueprintgeneratorpro.com
+- **General Support**: Bentleywinstonco@outlook.com
+- **GitHub Issues**: [Report Issues](https://github.com/yourusername/BlueprintGeneratorPro/issues)
+- **Documentation**: [View Documentation](../docs/)
+- **Support Development**: [Buy Me a Coffee](https://buymeacoffee.com/bentleywinston)
 
 ---
 

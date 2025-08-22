@@ -1,5 +1,11 @@
 # Blueprint Generator Pro 🚀
 
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Support%20Development-yellow.svg?style=for-the-badge&logo=buy-me-a-coffee)](https://buymeacoffee.com/bentleywinston)
+[![License: Commercial](https://img.shields.io/badge/License-Commercial-red.svg?style=for-the-badge)](LICENSE)
+[![Version](https://img.shields.io/badge/Version-1.0.0-blue.svg?style=for-the-badge)](https://github.com/yourusername/BlueprintGeneratorPro)
+
+**☕ Love this project? [Buy me a coffee!](https://buymeacoffee.com/bentleywinston) Your support helps keep this project alive and growing.**
+
 **Professional Documentation Generator & Project Validation Platform**
 
 Transform your development workflow with AI-powered documentation generation and comprehensive project validation. Create enterprise-grade PRDs, READMEs, MVPs, and security audits in minutes, not hours.
@@ -204,23 +210,29 @@ Blueprint Generator Pro is commercial software. **No use without permission.**
 
 ### 💰 **Pricing**
 Contact us for pricing information:
-- **Email**: licensing@blueprintgeneratorpro.com
-- **Website**: https://blueprintgeneratorpro.com/pricing
-- **Phone**: +1 (555) 123-4567
+- **Email**: Bentleywinstonco@outlook.com
+- **GitHub**: [BlueprintGeneratorPro Repository](https://github.com/yourusername/BlueprintGeneratorPro)
+- **Support**: [Buy Me a Coffee](https://buymeacoffee.com/bentleywinston)
 
 ## 🤝 **Support & Services**
 
 ### 📞 **Support Tiers**
 - **Community** - GitHub issues and discussions
-- **Professional** - Email support with SLA
-- **Enterprise** - Dedicated support team
-- **Premium** - 24/7 support + custom development
+- **Professional** - Email support via Bentleywinstonco@outlook.com
+- **Enterprise** - Custom solutions and dedicated support
+- **Premium** - Priority support + custom development
 
 ### 🎓 **Professional Services**
 - **Custom Implementation** - Tailored to your workflow
 - **Training & Onboarding** - Get your team up to speed
 - **Integration Services** - Connect with your existing tools
 - **Consulting** - Documentation strategy and best practices
+
+### ☕ **Support Development**
+Love this project? Consider supporting its development:
+- **[Buy Me a Coffee](https://buymeacoffee.com/bentleywinston)** - One-time support
+- **GitHub Sponsors** - Ongoing support for continued development
+- **Custom Development** - Paid feature development and consulting
 
 ## 🌟 **Success Stories**
 
@@ -249,14 +261,29 @@ Contact us for pricing information:
 ## 📞 **Contact**
 
 **Blueprint Generator Pro**
-- **Website**: https://blueprintgeneratorpro.com
-- **Email**: contact@blueprintgeneratorpro.com
-- **Sales**: sales@blueprintgeneratorpro.com
-- **Support**: support@blueprintgeneratorpro.com
-- **LinkedIn**: https://linkedin.com/company/blueprint-generator-pro
+- **GitHub**: [BlueprintGeneratorPro Repository](https://github.com/yourusername/BlueprintGeneratorPro)
+- **Email**: Bentleywinstonco@outlook.com
+- **Documentation**: [View Documentation](docs/)
+- **Support**: [Buy Me a Coffee](https://buymeacoffee.com/bentleywinston)
+- **Issues**: [GitHub Issues](https://github.com/yourusername/BlueprintGeneratorPro/issues)
 
 ---
 
 **© 2025 Blueprint Generator Pro. All rights reserved.**
 
-*Transform your documentation workflow today. Contact us for a personalized demo.*
+*Transform your documentation workflow today. [Support the project](https://buymeacoffee.com/bentleywinston) or [contact us](mailto:Bentleywinstonco@outlook.com) for custom solutions.*
+
+## ☕ **Support This Project**
+
+If Blueprint Generator Pro has helped you or your team, consider supporting its continued development:
+
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Support%20Development-yellow.svg?style=for-the-badge&logo=buy-me-a-coffee)](https://buymeacoffee.com/bentleywinston)
+
+**Your support helps:**
+- 🚀 **Accelerate development** of new features
+- 🐛 **Fix bugs** and improve stability
+- 📚 **Enhance documentation** and guides
+- 🔒 **Maintain security** and compliance
+- 💡 **Add requested features** from the community
+
+**Thank you for supporting open-source development!** 🙏

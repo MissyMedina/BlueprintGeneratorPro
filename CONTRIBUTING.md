@@ -13,9 +13,10 @@
 
 ### **Contact for Authorization**
 Before making any contributions, please contact:
-- **Email**: contributions@blueprintgeneratorpro.com
-- **Subject**: "Contribution Authorization Request"
+- **Email**: Bentleywinstonco@outlook.com
+- **Subject**: "Contribution Authorization Request - BlueprintGeneratorPro"
 - **Include**: Your license details and proposed contribution
+- **Support**: Consider [buying me a coffee](https://buymeacoffee.com/bentleywinston) to support development
 
 ## 🎯 **Types of Contributions**
 
@@ -68,7 +69,7 @@ Any other context about the problem.
 ### **Security Vulnerabilities**
 🚨 **Do NOT report security vulnerabilities in public issues!**
 
-Instead, email: security@blueprintgeneratorpro.com
+Instead, email: Bentleywinstonco@outlook.com (mark as "SECURITY" in subject)
 
 ## 💡 **Feature Requests**
 
@@ -302,22 +303,22 @@ All security-related changes require:
 ## 📞 **Getting Help**
 
 ### **Development Support**
-- **Technical Questions**: dev-support@blueprintgeneratorpro.com
-- **Architecture Guidance**: architecture@blueprintgeneratorpro.com
-- **Security Questions**: security@blueprintgeneratorpro.com
+- **Technical Questions**: Bentleywinstonco@outlook.com
+- **GitHub Issues**: [Report Issues](https://github.com/yourusername/BlueprintGeneratorPro/issues)
+- **Documentation**: [View Documentation](docs/)
 
 ### **Community Resources**
-- **Developer Forum**: https://forum.blueprintgeneratorpro.com
-- **Documentation**: https://docs.blueprintgeneratorpro.com
-- **API Reference**: https://api.blueprintgeneratorpro.com
+- **GitHub Repository**: [BlueprintGeneratorPro](https://github.com/yourusername/BlueprintGeneratorPro)
+- **Documentation**: [View Documentation](docs/)
+- **Support Development**: [Buy Me a Coffee](https://buymeacoffee.com/bentleywinston)
 
 ## 📜 **Contributor License Agreement**
 
 All contributors must sign our CLA before contributions can be accepted:
 
-1. **Download CLA**: https://blueprintgeneratorpro.com/cla
+1. **Request CLA**: Email Bentleywinstonco@outlook.com with subject "CLA Request"
 2. **Complete and Sign**: Fill out all required information
-3. **Submit**: Email to legal@blueprintgeneratorpro.com
+3. **Submit**: Email completed CLA to Bentleywinstonco@outlook.com
 4. **Confirmation**: Wait for confirmation before contributing
 
 ## 🎉 **Recognition**

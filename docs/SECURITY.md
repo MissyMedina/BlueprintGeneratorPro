@@ -290,9 +290,9 @@ AUDIT_LOG_RETENTION_DAYS=90
 6. **Lessons Learned** - Document and improve
 
 ### **Emergency Contacts**
-- **Security Team**: security@blueprintgeneratorpro.com
-- **Incident Response**: incident@blueprintgeneratorpro.com
-- **24/7 Hotline**: +1 (555) 123-SECURITY
+- **Security Team**: Bentleywinstonco@outlook.com
+- **GitHub Issues**: [Report Security Issues](https://github.com/yourusername/BlueprintGeneratorPro/issues)
+- **Urgent Issues**: Mark as "SECURITY" in subject line
 
 ## 🔍 **Vulnerability Management**
 
@@ -335,14 +335,14 @@ pip-audit --fix
 ## 📞 **Security Support**
 
 ### **Reporting Security Issues**
-- **Email**: security@blueprintgeneratorpro.com
-- **PGP Key**: Available on our website
-- **Response Time**: 24 hours for critical issues
+- **Email**: Bentleywinstonco@outlook.com (mark as "SECURITY" in subject)
+- **GitHub Issues**: [Report Security Issues](https://github.com/yourusername/BlueprintGeneratorPro/issues)
+- **Response Time**: 48 hours for critical issues
 
 ### **Security Resources**
-- **Security Documentation**: https://docs.blueprintgeneratorpro.com/security
-- **Security Blog**: https://blog.blueprintgeneratorpro.com/security
-- **Security Advisories**: https://security.blueprintgeneratorpro.com
+- **Security Documentation**: [View Security Guide](SECURITY.md)
+- **GitHub Repository**: [BlueprintGeneratorPro](https://github.com/yourusername/BlueprintGeneratorPro)
+- **Support Development**: [Buy Me a Coffee](https://buymeacoffee.com/bentleywinston)
 
 ---
 

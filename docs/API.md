@@ -8,7 +8,7 @@ This document provides comprehensive API reference for integrating Blueprint Gen
 
 - **Document Generator**: `http://localhost:8001`
 - **Validation Service**: `http://localhost:8002`
-- **Production**: `https://api.blueprintgeneratorpro.com`
+- **Production**: `https://yourusername.github.io/BlueprintGeneratorPro` (GitHub Pages)
 
 ## 🔐 **Authentication**
 
@@ -16,7 +16,7 @@ This document provides comprehensive API reference for integrating Blueprint Gen
 ```bash
 curl -H "Authorization: Bearer YOUR_API_KEY" \
      -H "Content-Type: application/json" \
-     https://api.blueprintgeneratorpro.com/api/generate
+     http://localhost:8001/api/generate
 ```
 
 ### **Rate Limiting**
@@ -514,6 +514,7 @@ Content-Type: application/json
 
 **📞 Need Help?**
 
-- **API Support**: api-support@blueprintgeneratorpro.com
-- **Documentation**: https://docs.blueprintgeneratorpro.com
-- **Status Page**: https://status.blueprintgeneratorpro.com
+- **Email Support**: Bentleywinstonco@outlook.com
+- **Documentation**: [View Documentation](../docs/)
+- **GitHub Issues**: [Report Issues](https://github.com/yourusername/BlueprintGeneratorPro/issues)
+- **Support Development**: [Buy Me a Coffee](https://buymeacoffee.com/bentleywinston)
