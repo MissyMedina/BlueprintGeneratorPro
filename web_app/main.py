@@ -32,9 +32,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 # Add the GuidanceBlueprintKit-Pro directory to the path
-sys.path.append(
-    os.path.join(os.path.dirname(__file__), "..", "GuidanceBlueprintKit-Pro")
-)
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", "GuidanceBlueprintKit-Pro"))
 
 # Import the core blueprint functionality
 try:
@@ -54,12 +52,7 @@ except ImportError as e:
 from app_analyzer import app_analyzer
 from content_generator import content_generator
 from export_utils import document_exporter
-from monitoring import (
-    HealthChecker,
-    monitor,
-    structured_logger,
-    track_performance,
-)
+from monitoring import HealthChecker, monitor, structured_logger, track_performance
 from standards_checker import standards_checker
 
 # Rate limiting setup
@@ -73,9 +66,7 @@ def custom_rate_limiter(request: Request, calls: int = 10, period: int = 60):
 
     # Clean old requests
     rate_limit_storage[client_ip] = [
-        req_time
-        for req_time in rate_limit_storage[client_ip]
-        if current_time - req_time < period
+        req_time for req_time in rate_limit_storage[client_ip] if current_time - req_time < period
     ]
 
     # Check if limit exceeded
@@ -96,9 +87,7 @@ app = FastAPI(
 )
 
 # Security middleware
-app.add_middleware(
-    TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1", "*.localhost"]
-)
+app.add_middleware(TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1", "*.localhost"])
 
 # CORS middleware for frontend integration
 app.add_middleware(
@@ -119,9 +108,7 @@ async def add_security_headers(request: Request, call_next):
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["X-XSS-Protection"] = "1; mode=block"
-    response.headers["Strict-Transport-Security"] = (
-        "max-age=31536000; includeSubDomains"
-    )
+    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
     response.headers["Content-Security-Policy"] = (
         "default-src 'self'; "
@@ -146,9 +133,7 @@ class GenerationRequest(BaseModel):
     claims_scope: str = Field(default="app", description="Scope for claims module")
     profile: Optional[str] = Field(None, description="Profile name to use")
     tags: Optional[Dict[str, str]] = Field(None, description="Custom tags")
-    evidence_data: Optional[List[Dict[str, str]]] = Field(
-        None, description="Evidence rows"
-    )
+    evidence_data: Optional[List[Dict[str, str]]] = Field(None, description="Evidence rows")
     repo_scan: bool = Field(False, description="Whether to scan uploaded repository")
     skip_categories: Optional[List[str]] = Field(
         None, description="Categories to skip in repo scan"
@@ -245,9 +230,7 @@ async def get_standards():
             },
         }
     except Exception as e:
-        raise HTTPException(
-            status_code=500, detail=f"Error checking standards: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Error checking standards: {str(e)}")
 
 
 @app.get("/api/standards/checklist/{scope}")
@@ -263,9 +246,7 @@ async def get_standards_checklist(scope: str):
             "count": len(checklist),
         }
     except Exception as e:
-        raise HTTPException(
-            status_code=500, detail=f"Error generating checklist: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Error generating checklist: {str(e)}")
 
 
 @app.post("/api/generate", response_model=GenerationResponse)
@@ -282,9 +263,7 @@ async def generate_document(request: GenerationRequest, http_request: Request):
 
         if request.profile:
             if request.profile not in profiles:
-                raise HTTPException(
-                    status_code=400, detail=f"Unknown profile: {request.profile}"
-                )
+                raise HTTPException(status_code=400, detail=f"Unknown profile: {request.profile}")
             profile_data = profiles[request.profile]
             modules = profile_data["modules"]
             claims_scope = profile_data["claims_scope"]
@@ -310,9 +289,7 @@ async def generate_document(request: GenerationRequest, http_request: Request):
 
         # Extract intelligent context from tags
         doc_type = request.tags.get("doc_type", "prd") if request.tags else "prd"
-        project_type = (
-            request.tags.get("project_type", "web-app") if request.tags else "web-app"
-        )
+        project_type = request.tags.get("project_type", "web-app") if request.tags else "web-app"
         description = request.tags.get("description", "") if request.tags else ""
 
         # Extract custom answers from tags
@@ -354,9 +331,7 @@ async def generate_document(request: GenerationRequest, http_request: Request):
         # Generate unique document ID and filename
         doc_id = str(uuid.uuid4())
         safe_project = (
-            "".join(
-                ch for ch in request.project if ch.isalnum() or ch in ("-", "_")
-            ).strip()
+            "".join(ch for ch in request.project if ch.isalnum() or ch in ("-", "_")).strip()
             or "Project"
         )
         filename = f"{safe_project}-{'-'.join(modules)}.md"
@@ -377,9 +352,7 @@ async def generate_document(request: GenerationRequest, http_request: Request):
         )
 
     except Exception as e:
-        raise HTTPException(
-            status_code=500, detail=f"Error generating document: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Error generating document: {str(e)}")
 
 
 @app.get("/api/document/{document_id}")
@@ -395,9 +368,7 @@ async def get_document(document_id: str):
         temp_file.write(doc["content"])
         temp_file_path = temp_file.name
 
-    return FileResponse(
-        path=temp_file_path, filename=doc["filename"], media_type="text/markdown"
-    )
+    return FileResponse(path=temp_file_path, filename=doc["filename"], media_type="text/markdown")
 
 
 @app.get("/api/export/{document_id}/{export_format}")
@@ -448,14 +419,10 @@ async def export_document(document_id: str, export_format: str):
             temp_file.write(content)
             temp_file_path = temp_file.name
 
-        return FileResponse(
-            path=temp_file_path, filename=filename, media_type=media_type
-        )
+        return FileResponse(path=temp_file_path, filename=filename, media_type=media_type)
 
     except Exception as e:
-        raise HTTPException(
-            status_code=500, detail=f"Error exporting document: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Error exporting document: {str(e)}")
 
 
 @app.get("/api/share/{document_id}")
@@ -476,18 +443,14 @@ async def share_document(document_id: str):
             "document_id": document_id,
         }
     except Exception as e:
-        raise HTTPException(
-            status_code=500, detail=f"Error creating share link: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Error creating share link: {str(e)}")
 
 
 @app.post("/api/analyze-app")
 async def analyze_application(file: UploadFile = File(...)):
     """Analyze an existing application codebase from uploaded file"""
     if not file.filename.endswith((".zip", ".tar.gz", ".tar")):
-        raise HTTPException(
-            status_code=400, detail="Only ZIP and TAR files are supported"
-        )
+        raise HTTPException(status_code=400, detail="Only ZIP and TAR files are supported")
 
     try:
         # Save uploaded file temporarily
@@ -506,9 +469,7 @@ async def analyze_application(file: UploadFile = File(...)):
 
             # Generate comprehensive report
             project_name = os.path.splitext(file.filename)[0]
-            analysis_report = app_analyzer.generate_analysis_report(
-                analysis, project_name
-            )
+            analysis_report = app_analyzer.generate_analysis_report(analysis, project_name)
 
             return {
                 "success": True,
@@ -522,9 +483,7 @@ async def analyze_application(file: UploadFile = File(...)):
             os.unlink(temp_file_path)
 
     except Exception as e:
-        raise HTTPException(
-            status_code=500, detail=f"Error analyzing application: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Error analyzing application: {str(e)}")
 
 
 @app.post("/api/analyze-local-folder")
@@ -554,18 +513,14 @@ async def analyze_local_folder(request: dict):
         }
 
     except Exception as e:
-        raise HTTPException(
-            status_code=500, detail=f"Error analyzing local folder: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Error analyzing local folder: {str(e)}")
 
 
 @app.post("/api/upload-repo")
 async def upload_repository(file: UploadFile = File(...)):
     """Upload and analyze a repository for evidence extraction"""
     if not file.filename.endswith((".zip", ".tar.gz", ".tar")):
-        raise HTTPException(
-            status_code=400, detail="Only ZIP and TAR files are supported"
-        )
+        raise HTTPException(status_code=400, detail="Only ZIP and TAR files are supported")
 
     try:
         # Create temporary directory
@@ -593,9 +548,7 @@ async def upload_repository(file: UploadFile = File(...)):
             return {"success": True, "findings": findings}
 
     except Exception as e:
-        raise HTTPException(
-            status_code=500, detail=f"Error processing repository: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Error processing repository: {str(e)}")
 
 
 if __name__ == "__main__":
