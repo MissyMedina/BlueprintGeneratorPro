@@ -2,7 +2,7 @@
 
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Support%20Development-yellow.svg?style=for-the-badge&logo=buy-me-a-coffee)](https://buymeacoffee.com/bentleywinston)
 [![License: Commercial](https://img.shields.io/badge/License-Commercial-red.svg?style=for-the-badge)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-1.0.0-blue.svg?style=for-the-badge)](https://github.com/yourusername/BlueprintGeneratorPro)
+[![Version](https://img.shields.io/badge/Version-1.0.0-blue.svg?style=for-the-badge)](https://github.com/MissyMedina/BlueprintGeneratorPro)
 
 **☕ Love this project? [Buy me a coffee!](https://buymeacoffee.com/bentleywinston) Your support helps keep this project alive and growing.**
 
@@ -211,7 +211,7 @@ Blueprint Generator Pro is commercial software. **No use without permission.**
 ### 💰 **Pricing**
 Contact us for pricing information:
 - **Email**: Bentleywinstonco@outlook.com
-- **GitHub**: [BlueprintGeneratorPro Repository](https://github.com/yourusername/BlueprintGeneratorPro)
+- **GitHub**: [BlueprintGeneratorPro Repository](https://github.com/MissyMedina/BlueprintGeneratorPro)
 - **Support**: [Buy Me a Coffee](https://buymeacoffee.com/bentleywinston)
 
 ## 🤝 **Support & Services**
@@ -261,11 +261,11 @@ Love this project? Consider supporting its development:
 ## 📞 **Contact**
 
 **Blueprint Generator Pro**
-- **GitHub**: [BlueprintGeneratorPro Repository](https://github.com/yourusername/BlueprintGeneratorPro)
+- **GitHub**: [BlueprintGeneratorPro Repository](https://github.com/MissyMedina/BlueprintGeneratorPro)
 - **Email**: Bentleywinstonco@outlook.com
 - **Documentation**: [View Documentation](docs/)
 - **Support**: [Buy Me a Coffee](https://buymeacoffee.com/bentleywinston)
-- **Issues**: [GitHub Issues](https://github.com/yourusername/BlueprintGeneratorPro/issues)
+- **Issues**: [GitHub Issues](https://github.com/MissyMedina/BlueprintGeneratorPro/issues)
 
 ---
 

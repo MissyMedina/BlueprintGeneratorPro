@@ -336,12 +336,12 @@ pip-audit --fix
 
 ### **Reporting Security Issues**
 - **Email**: Bentleywinstonco@outlook.com (mark as "SECURITY" in subject)
-- **GitHub Issues**: [Report Security Issues](https://github.com/yourusername/BlueprintGeneratorPro/issues)
+- **GitHub Issues**: [Report Security Issues](https://github.com/MissyMedina/BlueprintGeneratorPro/issues)
 - **Response Time**: 48 hours for critical issues
 
 ### **Security Resources**
 - **Security Documentation**: [View Security Guide](SECURITY.md)
-- **GitHub Repository**: [BlueprintGeneratorPro](https://github.com/yourusername/BlueprintGeneratorPro)
+- **GitHub Repository**: [BlueprintGeneratorPro](https://github.com/MissyMedina/BlueprintGeneratorPro)
 - **Support Development**: [Buy Me a Coffee](https://buymeacoffee.com/bentleywinston)
 
 ---

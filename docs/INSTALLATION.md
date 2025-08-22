@@ -418,7 +418,7 @@ If you encounter issues during installation:
 **Support Channels:**
 - **Email**: Bentleywinstonco@outlook.com
 - **Documentation**: [View Documentation](../docs/)
-- **GitHub Issues**: [Report Issues](https://github.com/yourusername/BlueprintGeneratorPro/issues)
+- **GitHub Issues**: [Report Issues](https://github.com/MissyMedina/BlueprintGeneratorPro/issues)
 - **Support Development**: [Buy Me a Coffee](https://buymeacoffee.com/bentleywinston)
 
 ## ✅ **Next Steps**

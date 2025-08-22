@@ -112,7 +112,7 @@ Your support helps achieve these development goals:
 
 - **Email**: Bentleywinstonco@outlook.com
 - **Subject**: "Blueprint Pro Sponsorship Inquiry"
-- **GitHub**: [BlueprintGeneratorPro](https://github.com/yourusername/BlueprintGeneratorPro)
+- **GitHub**: [BlueprintGeneratorPro](https://github.com/MissyMedina/BlueprintGeneratorPro)
 
 ## 🎉 **Thank You!**
 

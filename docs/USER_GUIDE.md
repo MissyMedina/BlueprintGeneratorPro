@@ -302,7 +302,7 @@ done
 
 ### **Contact Information**
 - **General Support**: Bentleywinstonco@outlook.com
-- **GitHub Issues**: [Report Issues](https://github.com/yourusername/BlueprintGeneratorPro/issues)
+- **GitHub Issues**: [Report Issues](https://github.com/MissyMedina/BlueprintGeneratorPro/issues)
 - **Documentation**: [View Documentation](../docs/)
 - **Support Development**: [Buy Me a Coffee](https://buymeacoffee.com/bentleywinston)
 

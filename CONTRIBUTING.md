@@ -304,11 +304,11 @@ All security-related changes require:
 
 ### **Development Support**
 - **Technical Questions**: Bentleywinstonco@outlook.com
-- **GitHub Issues**: [Report Issues](https://github.com/yourusername/BlueprintGeneratorPro/issues)
+- **GitHub Issues**: [Report Issues](https://github.com/MissyMedina/BlueprintGeneratorPro/issues)
 - **Documentation**: [View Documentation](docs/)
 
 ### **Community Resources**
-- **GitHub Repository**: [BlueprintGeneratorPro](https://github.com/yourusername/BlueprintGeneratorPro)
+- **GitHub Repository**: [BlueprintGeneratorPro](https://github.com/MissyMedina/BlueprintGeneratorPro)
 - **Documentation**: [View Documentation](docs/)
 - **Support Development**: [Buy Me a Coffee](https://buymeacoffee.com/bentleywinston)
 

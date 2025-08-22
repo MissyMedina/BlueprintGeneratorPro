@@ -235,5 +235,5 @@ Your repository is now completely set up with:
 **For questions or support:**
 - **Email**: Bentleywinstonco@outlook.com
 - **Documentation**: [View Documentation](docs/)
-- **Repository**: [BlueprintGeneratorPro](https://github.com/yourusername/BlueprintGeneratorPro)
+- **Repository**: [BlueprintGeneratorPro](https://github.com/MissyMedina/BlueprintGeneratorPro)
 - **Support Development**: [Buy Me a Coffee](https://buymeacoffee.com/bentleywinston)
