@@ -86,16 +86,12 @@ class PerformanceMonitor:
 
         # Calculate response time statistics
         response_times = self.metrics["response_times"]
-        avg_response_time = (
-            sum(response_times) / len(response_times) if response_times else 0
-        )
+        avg_response_time = sum(response_times) / len(response_times) if response_times else 0
 
         # Calculate success rate
         total_requests = self.metrics["requests_total"]
         success_rate = (
-            (self.metrics["requests_success"] / total_requests * 100)
-            if total_requests > 0
-            else 0
+            (self.metrics["requests_success"] / total_requests * 100) if total_requests > 0 else 0
         )
 
         # Get current system stats
@@ -166,9 +162,7 @@ def track_performance(func):
 
             # Log slow requests
             if response_time > 5.0:  # 5 seconds threshold
-                logger.warning(
-                    f"Slow request: {func.__name__} took {response_time:.2f}s"
-                )
+                logger.warning(f"Slow request: {func.__name__} took {response_time:.2f}s")
 
     @wraps(func)
     def sync_wrapper(*args, **kwargs):
@@ -187,9 +181,7 @@ def track_performance(func):
 
             # Log slow requests
             if response_time > 5.0:  # 5 seconds threshold
-                logger.warning(
-                    f"Slow request: {func.__name__} took {response_time:.2f}s"
-                )
+                logger.warning(f"Slow request: {func.__name__} took {response_time:.2f}s")
 
     # Return appropriate wrapper based on function type
     import asyncio

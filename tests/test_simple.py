@@ -171,9 +171,7 @@ async def root():
         # Note: error_handling detection may vary based on content patterns
 
         # Should get high quality score
-        self.assertGreaterEqual(
-            quality["quality_score"], 90, "Should get high quality score"
-        )
+        self.assertGreaterEqual(quality["quality_score"], 90, "Should get high quality score")
 
         # Should detect security features
         security = analysis["security_analysis"]

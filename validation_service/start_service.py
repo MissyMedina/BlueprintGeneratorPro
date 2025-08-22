@@ -59,9 +59,7 @@ def start_service():
 
     try:
         # Start the service
-        process = subprocess.Popen(
-            [sys.executable, "main.py"], cwd=Path(__file__).parent
-        )
+        process = subprocess.Popen([sys.executable, "main.py"], cwd=Path(__file__).parent)
 
         # Wait a moment for startup
         time.sleep(3)

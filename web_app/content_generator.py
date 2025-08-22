@@ -131,18 +131,12 @@ class ContentGenerator:
     ) -> str:
         """Generate a comprehensive PRD with actual project-specific content"""
 
-        project_info = self.project_types.get(
-            project_type, self.project_types["web-app"]
-        )
+        project_info = self.project_types.get(project_type, self.project_types["web-app"])
 
         # Extract key information from custom answers
         target_users = custom_answers.get("target_users", "end users")
-        main_problem = custom_answers.get(
-            "main_problem", "user needs and business requirements"
-        )
-        success_metrics = custom_answers.get(
-            "success_metrics", "user adoption and satisfaction"
-        )
+        main_problem = custom_answers.get("main_problem", "user needs and business requirements")
+        success_metrics = custom_answers.get("success_metrics", "user adoption and satisfaction")
 
         content = f"""## Product Requirements Document: {project_name}
 
@@ -177,9 +171,7 @@ class ContentGenerator:
 """
 
         # Generate specific features based on project type and user input
-        core_features = self._generate_core_features(
-            project_type, custom_answers, focus_area
-        )
+        core_features = self._generate_core_features(project_type, custom_answers, focus_area)
         for i, feature in enumerate(core_features, 1):
             content += f"- **F{i:02d}:** {feature}\n"
 
@@ -327,9 +319,7 @@ class ContentGenerator:
         self, project_type: str, custom_answers: Dict[str, str], focus_area: str
     ) -> List[str]:
         """Generate project-specific core features"""
-        project_info = self.project_types.get(
-            project_type, self.project_types["web-app"]
-        )
+        project_info = self.project_types.get(project_type, self.project_types["web-app"])
         base_features = project_info["common_features"]
 
         features = []
@@ -408,13 +398,9 @@ class ContentGenerator:
             "Machine learning-based optimization",
         ]
 
-    def _generate_security_requirements(
-        self, project_type: str, focus_area: str
-    ) -> List[str]:
+    def _generate_security_requirements(self, project_type: str, focus_area: str) -> List[str]:
         """Generate security requirements based on project type and focus"""
-        project_info = self.project_types.get(
-            project_type, self.project_types["web-app"]
-        )
+        project_info = self.project_types.get(project_type, self.project_types["web-app"])
         base_security = project_info["security_focus"]
 
         requirements = []
@@ -444,14 +430,10 @@ class ContentGenerator:
     ) -> str:
         """Generate a comprehensive README with actual project details"""
 
-        project_info = self.project_types.get(
-            project_type, self.project_types["web-app"]
-        )
+        project_info = self.project_types.get(project_type, self.project_types["web-app"])
 
         installation_method = custom_answers.get("installation_method", "git clone")
-        main_features = custom_answers.get(
-            "main_features", "Core functionality for user needs"
-        )
+        main_features = custom_answers.get("main_features", "Core functionality for user needs")
         tech_stack = custom_answers.get("tech_stack", "Modern web technologies")
 
         content = f"""# {project_name}
@@ -646,9 +628,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
         self, project_type: str, custom_answers: Dict[str, str]
     ) -> List[str]:
         """Generate README-specific features"""
-        project_info = self.project_types.get(
-            project_type, self.project_types["web-app"]
-        )
+        project_info = self.project_types.get(project_type, self.project_types["web-app"])
 
         features = []
         for feature in project_info["common_features"]:

@@ -211,28 +211,18 @@ class ApplicationAnalyzer:
 
             return analysis
 
-    def analyze_folder_contents(
-        self, folder_contents: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    def analyze_folder_contents(self, folder_contents: Dict[str, Any]) -> Dict[str, Any]:
         """Analyze folder contents directly without file extraction"""
 
         try:
             # Analyze the folder contents
             analysis = {
                 "project_structure": self._analyze_folder_structure(folder_contents),
-                "detected_technologies": self._detect_technologies_from_contents(
-                    folder_contents
-                ),
+                "detected_technologies": self._detect_technologies_from_contents(folder_contents),
                 "application_type": {},
-                "security_analysis": self._analyze_security_from_contents(
-                    folder_contents
-                ),
-                "quality_assessment": self._assess_quality_from_contents(
-                    folder_contents
-                ),
-                "architecture_insights": self._analyze_architecture_from_contents(
-                    folder_contents
-                ),
+                "security_analysis": self._analyze_security_from_contents(folder_contents),
+                "quality_assessment": self._assess_quality_from_contents(folder_contents),
+                "architecture_insights": self._analyze_architecture_from_contents(folder_contents),
                 "missing_components": [],
                 "improvement_suggestions": [],
                 "enhancement_opportunities": [],
@@ -298,9 +288,7 @@ class ApplicationAnalyzer:
         for root, dirs, files in os.walk(path):
             # Skip common ignore directories
             dirs[:] = [
-                d
-                for d in dirs
-                if d not in [".git", "node_modules", "__pycache__", ".venv", "venv"]
+                d for d in dirs if d not in [".git", "node_modules", "__pycache__", ".venv", "venv"]
             ]
 
             rel_root = os.path.relpath(root, path)
@@ -325,9 +313,7 @@ class ApplicationAnalyzer:
         detected = defaultdict(list)
 
         for root, dirs, files in os.walk(path):
-            dirs[:] = [
-                d for d in dirs if d not in [".git", "node_modules", "__pycache__"]
-            ]
+            dirs[:] = [d for d in dirs if d not in [".git", "node_modules", "__pycache__"]]
 
             for file in files:
                 file_path = os.path.join(root, file)
@@ -423,31 +409,20 @@ class ApplicationAnalyzer:
 
         # Scan for security patterns
         for root, dirs, files in os.walk(path):
-            dirs[:] = [
-                d for d in dirs if d not in [".git", "node_modules", "__pycache__"]
-            ]
+            dirs[:] = [d for d in dirs if d not in [".git", "node_modules", "__pycache__"]]
 
             for file in files:
-                if file.endswith(
-                    (".js", ".py", ".java", ".cs", ".php", ".rb", ".go", ".rs")
-                ):
+                if file.endswith((".js", ".py", ".java", ".cs", ".php", ".rb", ".go", ".rs")):
                     file_path = os.path.join(root, file)
                     try:
-                        with open(
-                            file_path, "r", encoding="utf-8", errors="ignore"
-                        ) as f:
+                        with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
                             content = f.read().lower()
 
                             for category, patterns in self.security_patterns.items():
                                 for pattern in patterns:
                                     if re.search(pattern, content):
-                                        if (
-                                            category
-                                            not in security["implemented_features"]
-                                        ):
-                                            security["implemented_features"].append(
-                                                category
-                                            )
+                                        if category not in security["implemented_features"]:
+                                            security["implemented_features"].append(category)
                     except:
                         pass
 
@@ -461,9 +436,7 @@ class ApplicationAnalyzer:
             security["implemented_features"]
         )
         for feature in missing_features:
-            security["recommendations"].append(
-                f"Implement {feature.replace('_', ' ')} mechanisms"
-            )
+            security["recommendations"].append(f"Implement {feature.replace('_', ' ')} mechanisms")
 
         return security
 
@@ -478,9 +451,7 @@ class ApplicationAnalyzer:
 
         # Check for quality indicators
         for root, dirs, files in os.walk(path):
-            dirs[:] = [
-                d for d in dirs if d not in [".git", "node_modules", "__pycache__"]
-            ]
+            dirs[:] = [d for d in dirs if d not in [".git", "node_modules", "__pycache__"]]
 
             for file in files:
                 file_path = os.path.join(root, file)
@@ -514,9 +485,7 @@ class ApplicationAnalyzer:
         }
 
         # Use the new comprehensive architecture scoring
-        architecture["architectural_score"] = (
-            self._calculate_comprehensive_architecture_score(path)
-        )
+        architecture["architectural_score"] = self._calculate_comprehensive_architecture_score(path)
 
         # Check for common architectural patterns
         patterns_found = []
@@ -541,9 +510,7 @@ class ApplicationAnalyzer:
             "pages/",
             "src/pages/",
         ]
-        if any(
-            self._path_exists(path, indicator) for indicator in component_indicators
-        ):
+        if any(self._path_exists(path, indicator) for indicator in component_indicators):
             patterns_found.append("Component-Based")
 
         # Check for microservices
@@ -553,9 +520,7 @@ class ApplicationAnalyzer:
             "kubernetes/",
             "microservices/",
         ]
-        if any(
-            self._path_exists(path, indicator) for indicator in microservice_indicators
-        ):
+        if any(self._path_exists(path, indicator) for indicator in microservice_indicators):
             patterns_found.append("Microservices")
 
         # Check for API-first design
@@ -609,29 +574,17 @@ class ApplicationAnalyzer:
                 missing.append("Database layer - No database technology detected")
             if "testing" not in analysis["quality_assessment"]["implemented_practices"]:
                 missing.append("Testing framework - No test files found")
-            if (
-                "documentation"
-                not in analysis["quality_assessment"]["implemented_practices"]
-            ):
+            if "documentation" not in analysis["quality_assessment"]["implemented_practices"]:
                 missing.append("Documentation - Missing README or docs")
 
         if "backend" in app_type:
-            if (
-                "authentication"
-                not in analysis["security_analysis"]["implemented_features"]
-            ):
+            if "authentication" not in analysis["security_analysis"]["implemented_features"]:
                 missing.append("Authentication system - No auth implementation found")
-            if (
-                "validation"
-                not in analysis["security_analysis"]["implemented_features"]
-            ):
+            if "validation" not in analysis["security_analysis"]["implemented_features"]:
                 missing.append("Input validation - No validation patterns found")
 
         if "mobile" in app_type:
-            if (
-                "error_handling"
-                not in analysis["quality_assessment"]["implemented_practices"]
-            ):
+            if "error_handling" not in analysis["quality_assessment"]["implemented_practices"]:
                 missing.append("Error handling - Limited error handling patterns")
 
         return missing
@@ -647,10 +600,7 @@ class ApplicationAnalyzer:
                 f"🔒 Security Score: {security_score}/100 - Implement missing security features"
             )
             improvements.extend(
-                [
-                    f"• {rec}"
-                    for rec in analysis["security_analysis"]["recommendations"][:3]
-                ]
+                [f"• {rec}" for rec in analysis["security_analysis"]["recommendations"][:3]]
             )
 
         # Quality improvements
@@ -660,9 +610,7 @@ class ApplicationAnalyzer:
                 f"📊 Quality Score: {quality_score}/100 - Add missing development practices"
             )
             for practice in analysis["quality_assessment"]["missing_practices"][:3]:
-                improvements.append(
-                    f"• Add {practice.replace('_', ' ')} to improve code quality"
-                )
+                improvements.append(f"• Add {practice.replace('_', ' ')} to improve code quality")
 
         # Architecture improvements
         arch_score = analysis["architecture_insights"]["architectural_score"]
@@ -838,9 +786,7 @@ class ApplicationAnalyzer:
 
         return report
 
-    def _analyze_folder_structure(
-        self, folder_contents: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    def _analyze_folder_structure(self, folder_contents: Dict[str, Any]) -> Dict[str, Any]:
         """Analyze folder structure from contents"""
         files = folder_contents.get("files", [])
         directories = folder_contents.get("directories", [])
@@ -932,9 +878,7 @@ class ApplicationAnalyzer:
 
         return app_type
 
-    def _analyze_security_from_contents(
-        self, folder_contents: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    def _analyze_security_from_contents(self, folder_contents: Dict[str, Any]) -> Dict[str, Any]:
         """Analyze security from folder contents"""
         security = {
             "implemented_features": [],
@@ -969,15 +913,11 @@ class ApplicationAnalyzer:
             security["implemented_features"]
         )
         for feature in missing_features:
-            security["recommendations"].append(
-                f"Implement {feature.replace('_', ' ')} mechanisms"
-            )
+            security["recommendations"].append(f"Implement {feature.replace('_', ' ')} mechanisms")
 
         return security
 
-    def _assess_quality_from_contents(
-        self, folder_contents: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    def _assess_quality_from_contents(self, folder_contents: Dict[str, Any]) -> Dict[str, Any]:
         """Assess quality from folder contents"""
         quality = {
             "quality_score": 0,
@@ -1041,9 +981,7 @@ class ApplicationAnalyzer:
             "src/views/",
             "src/controllers/",
         ]
-        if any(
-            any(indicator in path for path in all_paths) for indicator in mvc_indicators
-        ):
+        if any(any(indicator in path for path in all_paths) for indicator in mvc_indicators):
             patterns_found.append("MVC")
 
         # Check for component-based architecture
@@ -1053,10 +991,7 @@ class ApplicationAnalyzer:
             "pages/",
             "src/pages/",
         ]
-        if any(
-            any(indicator in path for path in all_paths)
-            for indicator in component_indicators
-        ):
+        if any(any(indicator in path for path in all_paths) for indicator in component_indicators):
             patterns_found.append("Component-Based")
 
         # Check for microservices
@@ -1067,8 +1002,7 @@ class ApplicationAnalyzer:
             "microservices/",
         ]
         if any(
-            any(indicator in path for path in all_paths)
-            for indicator in microservice_indicators
+            any(indicator in path for path in all_paths) for indicator in microservice_indicators
         ):
             patterns_found.append("Microservices")
 
@@ -1096,10 +1030,7 @@ class ApplicationAnalyzer:
             "src/lib/",
             "common/",
         ]
-        if any(
-            any(indicator in path for path in all_paths)
-            for indicator in layer_indicators
-        ):
+        if any(any(indicator in path for path in all_paths) for indicator in layer_indicators):
             patterns_found.append("Layered")
 
         architecture["patterns"] = patterns_found
@@ -1328,9 +1259,7 @@ class ApplicationAnalyzer:
         # Cap at 100
         return min(total_score, 100)
 
-    def _boost_scores_for_quality_projects(
-        self, analysis: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    def _boost_scores_for_quality_projects(self, analysis: Dict[str, Any]) -> Dict[str, Any]:
         """Boost scores for projects that are clearly well-built"""
 
         # Check if this is a quality project based on indicators
@@ -1341,10 +1270,7 @@ class ApplicationAnalyzer:
             quality_indicators += 1
 
         # Has documentation
-        if (
-            analysis.get("project_structure", {}).get("file_types", {}).get(".md", 0)
-            > 0
-        ):
+        if analysis.get("project_structure", {}).get("file_types", {}).get(".md", 0) > 0:
             quality_indicators += 1
 
         # Has containerization
@@ -1367,9 +1293,7 @@ class ApplicationAnalyzer:
             # Boost architecture score to at least 90
             if analysis["architecture_insights"]["architectural_score"] < 90:
                 analysis["architecture_insights"]["architectural_score"] = 90
-                analysis["architecture_insights"]["patterns"].extend(
-                    ["Layered", "Component-Based"]
-                )
+                analysis["architecture_insights"]["patterns"].extend(["Layered", "Component-Based"])
 
         return analysis
 

@@ -254,9 +254,7 @@ class StandardsChecker:
             report += f"## {standard.name} {status_emoji}\n\n"
             report += f"- **Version**: {standard.version}\n"
             report += f"- **Status**: {standard.status.title()}\n"
-            report += (
-                f"- **Last Updated**: {standard.last_updated.strftime('%Y-%m-%d')}\n"
-            )
+            report += f"- **Last Updated**: {standard.last_updated.strftime('%Y-%m-%d')}\n"
             report += f"- **Severity**: {standard.severity.upper()}\n\n"
             report += f"**Description**: {standard.description}\n\n"
 

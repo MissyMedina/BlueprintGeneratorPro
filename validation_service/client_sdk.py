@@ -68,9 +68,7 @@ class ValidationClient:
                 "validation_profile": validation_profile,
             }
 
-            response = self.session.post(
-                f"{self.base_url}/validate/upload", files=files, data=data
-            )
+            response = self.session.post(f"{self.base_url}/validate/upload", files=files, data=data)
             response.raise_for_status()
             result = response.json()
 
@@ -194,9 +192,7 @@ class ValidationClient:
         self, validation_id: str, output_path: Optional[Union[str, Path]] = None
     ) -> Path:
         """Download validation report as markdown file"""
-        response = self.session.get(
-            f"{self.base_url}/validate/{validation_id}/report/download"
-        )
+        response = self.session.get(f"{self.base_url}/validate/{validation_id}/report/download")
         response.raise_for_status()
 
         if output_path is None:
@@ -219,9 +215,7 @@ class ValidationClient:
             if status["status"] == "completed":
                 return self.get_validation_results(validation_id)
             elif status["status"] == "failed":
-                raise RuntimeError(
-                    f"Validation failed: {status.get('message', 'Unknown error')}"
-                )
+                raise RuntimeError(f"Validation failed: {status.get('message', 'Unknown error')}")
 
             time.sleep(2)  # Poll every 2 seconds
 
@@ -256,9 +250,7 @@ class ValidationClient:
                 contents["files"].append(str(relative_path))
 
                 # Read text files (with size limit)
-                if (
-                    self._is_text_file(file) and file_path.stat().st_size < 1024 * 1024
-                ):  # 1MB limit
+                if self._is_text_file(file) and file_path.stat().st_size < 1024 * 1024:  # 1MB limit
                     try:
                         with open(file_path, "r", encoding="utf-8") as f:
                             contents["file_contents"][str(relative_path)] = f.read()

@@ -210,9 +210,7 @@ jobs:
         self.assertGreaterEqual(
             security_score, 90, f"Security score {security_score} should be >= 90"
         )
-        self.assertGreaterEqual(
-            quality_score, 90, f"Quality score {quality_score} should be >= 90"
-        )
+        self.assertGreaterEqual(quality_score, 90, f"Quality score {quality_score} should be >= 90")
         self.assertGreaterEqual(
             architecture_score,
             80,
@@ -222,36 +220,22 @@ jobs:
         # Step 6: Verify specific quality indicators were detected
         quality_practices = analysis["quality_assessment"]["implemented_practices"]
         self.assertIn("testing", quality_practices, "Testing should be detected")
-        self.assertIn(
-            "documentation", quality_practices, "Documentation should be detected"
-        )
+        self.assertIn("documentation", quality_practices, "Documentation should be detected")
         self.assertIn("ci_cd", quality_practices, "CI/CD should be detected")
-        self.assertIn(
-            "error_handling", quality_practices, "Error handling should be detected"
-        )
+        self.assertIn("error_handling", quality_practices, "Error handling should be detected")
 
         # Step 7: Verify security features were detected
         security_features = analysis["security_analysis"]["implemented_features"]
-        self.assertIn(
-            "authentication", security_features, "Authentication should be detected"
-        )
-        self.assertIn(
-            "validation", security_features, "Input validation should be detected"
-        )
-        self.assertIn(
-            "encryption", security_features, "Encryption/hashing should be detected"
-        )
+        self.assertIn("authentication", security_features, "Authentication should be detected")
+        self.assertIn("validation", security_features, "Input validation should be detected")
+        self.assertIn("encryption", security_features, "Encryption/hashing should be detected")
 
         # Step 8: Verify technology detection
         technologies = analysis["detected_technologies"]
         self.assertIn("backend", technologies, "Backend technology should be detected")
-        self.assertIn(
-            "python", technologies.get("backend", []), "Python should be detected"
-        )
+        self.assertIn("python", technologies.get("backend", []), "Python should be detected")
         self.assertIn("devops", technologies, "DevOps technology should be detected")
-        self.assertIn(
-            "docker", technologies.get("devops", []), "Docker should be detected"
-        )
+        self.assertIn("docker", technologies.get("devops", []), "Docker should be detected")
 
     def test_documentation_and_analysis_consistency(self):
         """Test that documentation generation and analysis are consistent"""
@@ -357,9 +341,7 @@ class TestSystemPerformance(unittest.TestCase):
         analysis_time = end_time - start_time
 
         # Should complete within 5 seconds
-        self.assertLess(
-            analysis_time, 5.0, f"Analysis took {analysis_time:.2f}s, should be < 5s"
-        )
+        self.assertLess(analysis_time, 5.0, f"Analysis took {analysis_time:.2f}s, should be < 5s")
 
         # Should still produce valid results
         self.assertIsInstance(analysis, dict)

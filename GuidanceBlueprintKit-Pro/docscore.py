@@ -51,9 +51,7 @@ def score(md):
     table_rows = count(r"\n\| .* \| .* \| .* \| .* \|\n", md)
     statuses = count(r"✅|⚠️|❌", md)
     evid_links = count(r"http[s]?://|\.py:|\.md:|L\d+|§|\.\w{2,3}", md)
-    claim_points = min(
-        25, table_rows * 3 + min(10, statuses) + min(10, evid_links // 3)
-    )
+    claim_points = min(25, table_rows * 3 + min(10, statuses) + min(10, evid_links // 3))
     total += claim_points
     parts["claims"] = claim_points
 

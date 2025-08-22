@@ -174,9 +174,7 @@ class TestApplicationAnalyzer(unittest.TestCase):
         boosted_analysis = self.analyzer._boost_scores_for_quality_projects(analysis)
 
         # Should boost scores to at least 90
-        self.assertGreaterEqual(
-            boosted_analysis["quality_assessment"]["quality_score"], 90
-        )
+        self.assertGreaterEqual(boosted_analysis["quality_assessment"]["quality_score"], 90)
         self.assertGreaterEqual(
             boosted_analysis["architecture_insights"]["architectural_score"], 90
         )
@@ -240,14 +238,10 @@ async def root():
         # Verify high scores for this well-structured project
         self.assertGreaterEqual(analysis["security_analysis"]["security_score"], 80)
         self.assertGreaterEqual(analysis["quality_assessment"]["quality_score"], 90)
-        self.assertGreaterEqual(
-            analysis["architecture_insights"]["architectural_score"], 80
-        )
+        self.assertGreaterEqual(analysis["architecture_insights"]["architectural_score"], 80)
 
         # Verify testing is detected
-        self.assertIn(
-            "testing", analysis["quality_assessment"]["implemented_practices"]
-        )
+        self.assertIn("testing", analysis["quality_assessment"]["implemented_practices"])
 
 
 if __name__ == "__main__":

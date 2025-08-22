@@ -107,9 +107,7 @@ async def validate_uploaded_project(
     """Validate an uploaded project archive"""
 
     if not file.filename.endswith((".zip", ".tar.gz", ".tar")):
-        raise HTTPException(
-            status_code=400, detail="Only ZIP and TAR files are supported"
-        )
+        raise HTTPException(status_code=400, detail="Only ZIP and TAR files are supported")
 
     validation_id = str(uuid.uuid4())
     project_name = project_name or os.path.splitext(file.filename)[0]
@@ -140,9 +138,7 @@ async def validate_uploaded_project(
 
 
 @app.post("/validate/folder")
-async def validate_folder_contents(
-    background_tasks: BackgroundTasks, request: Dict[str, Any]
-):
+async def validate_folder_contents(background_tasks: BackgroundTasks, request: Dict[str, Any]):
     """Validate folder contents directly"""
 
     validation_id = str(uuid.uuid4())
@@ -247,9 +243,7 @@ async def get_validation_results(validation_id: str):
     result = validation_results[validation_id]
 
     if result["status"] != "completed":
-        raise HTTPException(
-            status_code=202, detail=f"Validation still {result['status']}"
-        )
+        raise HTTPException(status_code=202, detail=f"Validation still {result['status']}")
 
     return ValidationResponse(
         validation_id=validation_id,
@@ -273,9 +267,7 @@ async def get_validation_report(validation_id: str):
     result = validation_results[validation_id]
 
     if result["status"] != "completed":
-        raise HTTPException(
-            status_code=202, detail=f"Validation still {result['status']}"
-        )
+        raise HTTPException(status_code=202, detail=f"Validation still {result['status']}")
 
     # Generate comprehensive report
     report = generate_detailed_report(result)
@@ -299,9 +291,7 @@ async def download_validation_report(validation_id: str):
     result = validation_results[validation_id]
 
     if result["status"] != "completed":
-        raise HTTPException(
-            status_code=202, detail=f"Validation still {result['status']}"
-        )
+        raise HTTPException(status_code=202, detail=f"Validation still {result['status']}")
 
     # Generate markdown report
     report_content = app_analyzer.generate_analysis_report(
@@ -350,9 +340,7 @@ async def process_uploaded_file(
         scores = {
             "security": analysis.get("security_analysis", {}).get("security_score", 0),
             "quality": analysis.get("quality_assessment", {}).get("quality_score", 0),
-            "architecture": analysis.get("architecture_insights", {}).get(
-                "architectural_score", 0
-            ),
+            "architecture": analysis.get("architecture_insights", {}).get("architectural_score", 0),
         }
 
         recommendations = analysis.get("improvement_suggestions", [])
@@ -403,9 +391,7 @@ async def process_folder_contents(
         scores = {
             "security": analysis.get("security_analysis", {}).get("security_score", 0),
             "quality": analysis.get("quality_assessment", {}).get("quality_score", 0),
-            "architecture": analysis.get("architecture_insights", {}).get(
-                "architectural_score", 0
-            ),
+            "architecture": analysis.get("architecture_insights", {}).get("architectural_score", 0),
         }
 
         recommendations = analysis.get("improvement_suggestions", [])
@@ -479,18 +465,12 @@ async def process_git_repository(
             analysis = app_analyzer.analyze_folder_contents(folder_contents)
 
             validation_results[validation_id]["progress"] = 90
-            validation_results[validation_id][
-                "message"
-            ] = "Generating recommendations..."
+            validation_results[validation_id]["message"] = "Generating recommendations..."
 
             # Extract scores and recommendations
             scores = {
-                "security": analysis.get("security_analysis", {}).get(
-                    "security_score", 0
-                ),
-                "quality": analysis.get("quality_assessment", {}).get(
-                    "quality_score", 0
-                ),
+                "security": analysis.get("security_analysis", {}).get("security_score", 0),
+                "quality": analysis.get("quality_assessment", {}).get("quality_score", 0),
                 "architecture": analysis.get("architecture_insights", {}).get(
                     "architectural_score", 0
                 ),
@@ -527,9 +507,7 @@ def read_directory_contents(directory_path: str) -> Dict[str, Any]:
     for root, dirs, files in os.walk(directory_path):
         # Skip common ignore directories
         dirs[:] = [
-            d
-            for d in dirs
-            if d not in [".git", "__pycache__", "node_modules", ".venv", "venv"]
+            d for d in dirs if d not in [".git", "__pycache__", "node_modules", ".venv", "venv"]
         ]
 
         for file in files:
@@ -538,9 +516,7 @@ def read_directory_contents(directory_path: str) -> Dict[str, Any]:
             contents["files"].append(relative_path)
 
             # Read text files (limit size)
-            if (
-                is_text_file(file) and os.path.getsize(file_path) < 1024 * 1024
-            ):  # 1MB limit
+            if is_text_file(file) and os.path.getsize(file_path) < 1024 * 1024:  # 1MB limit
                 try:
                     with open(file_path, "r", encoding="utf-8") as f:
                         contents["file_contents"][relative_path] = f.read()
@@ -599,9 +575,7 @@ def is_text_file(filename: str) -> bool:
 
     ext = os.path.splitext(filename.lower())[1]
     return (
-        ext in text_extensions
-        or "makefile" in filename.lower()
-        or "dockerfile" in filename.lower()
+        ext in text_extensions or "makefile" in filename.lower() or "dockerfile" in filename.lower()
     )
 
 
@@ -619,9 +593,7 @@ def generate_detailed_report(result: Dict[str, Any]) -> Dict[str, Any]:
             "key_strengths": extract_strengths(analysis),
             "priority_improvements": result.get("recommendations", [])[:5],
             "technology_stack": analysis.get("detected_technologies", {}),
-            "project_type": analysis.get("application_type", {}).get(
-                "description", "Unknown"
-            ),
+            "project_type": analysis.get("application_type", {}).get("description", "Unknown"),
         },
         "detailed_analysis": analysis,
         "recommendations": {
@@ -632,8 +604,7 @@ def generate_detailed_report(result: Dict[str, Any]) -> Dict[str, Any]:
         "compliance_status": {
             "security_compliant": result.get("scores", {}).get("security", 0) >= 80,
             "quality_compliant": result.get("scores", {}).get("quality", 0) >= 80,
-            "architecture_compliant": result.get("scores", {}).get("architecture", 0)
-            >= 80,
+            "architecture_compliant": result.get("scores", {}).get("architecture", 0) >= 80,
         },
     }
 

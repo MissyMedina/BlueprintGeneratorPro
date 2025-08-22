@@ -92,9 +92,7 @@ class TestValidationClient(unittest.TestCase):
             self.assertIn("subdir", contents["directories"])
 
             # Check file contents were read
-            self.assertEqual(
-                contents["file_contents"]["main.py"], 'print("Hello World")'
-            )
+            self.assertEqual(contents["file_contents"]["main.py"], 'print("Hello World")')
             self.assertEqual(contents["file_contents"]["README.md"], "# Test Project")
 
     def test_is_text_file(self):
@@ -149,9 +147,7 @@ class TestValidationClient(unittest.TestCase):
             "file_contents": {"main.py": "print('Hello')", "README.md": "# Test"},
         }
 
-        with patch.object(
-            self.client, "_read_folder_contents", return_value=folder_contents
-        ):
+        with patch.object(self.client, "_read_folder_contents", return_value=folder_contents):
             with patch.object(self.client, "_wait_for_completion") as mock_wait:
                 mock_wait.return_value = {
                     "validation_id": "test-123",

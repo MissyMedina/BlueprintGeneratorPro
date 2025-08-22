@@ -65,9 +65,7 @@ def example_validate_git_repository():
     git_url = "https://github.com/fastapi/fastapi.git"
 
     try:
-        results = validate_git_repo(
-            git_url=git_url, project_name="FastAPI", branch="master"
-        )
+        results = validate_git_repo(git_url=git_url, project_name="FastAPI", branch="master")
 
         print(f"✅ Validation completed!")
         print(f"Repository: {git_url}")
@@ -124,9 +122,7 @@ def example_batch_validation():
             )
 
         except Exception as e:
-            results.append(
-                {"name": project["name"], "error": str(e), "status": "failed"}
-            )
+            results.append({"name": project["name"], "error": str(e), "status": "failed"})
 
     # Summary report
     print(f"\n📊 Batch Validation Summary:")
@@ -166,9 +162,7 @@ def example_async_validation():
 
         while True:
             status = client.get_validation_status(validation_id)
-            print(
-                f"Status: {status['status']} - {status['progress']}% - {status['message']}"
-            )
+            print(f"Status: {status['status']} - {status['progress']}% - {status['message']}")
 
             if status["status"] in ["completed", "failed"]:
                 break

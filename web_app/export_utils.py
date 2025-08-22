@@ -206,9 +206,7 @@ Claims Scope: {metadata.get('claims_scope', 'N/A')}
         text_content = re.sub(r"\*([^\*]+)\*", r"\1", text_content)
 
         # Remove markdown code blocks
-        text_content = re.sub(
-            r"```[^`]*```", "[CODE BLOCK]", text_content, flags=re.DOTALL
-        )
+        text_content = re.sub(r"```[^`]*```", "[CODE BLOCK]", text_content, flags=re.DOTALL)
         text_content = re.sub(r"`([^`]+)`", r"\1", text_content)
 
         return header + text_content

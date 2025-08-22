@@ -230,15 +230,11 @@ def read_evidence_csv(fp):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument(
-        "--repo", help="Path to repo to auto-extract evidence (optional, non-fatal)"
-    )
+    ap.add_argument("--repo", help="Path to repo to auto-extract evidence (optional, non-fatal)")
     ap.add_argument("--max_findings", type=int, default=50, help="Limit auto findings")
     ap.add_argument("--skip_categories", help="Comma list: security,tests")
     ap.add_argument("--project", required=True)
-    ap.add_argument(
-        "--modules", help="Comma list: claims,prd,operator,identity,appendices"
-    )
+    ap.add_argument("--modules", help="Comma list: claims,prd,operator,identity,appendices")
     ap.add_argument(
         "--claims_scope",
         choices=[
@@ -253,12 +249,8 @@ def main():
         ],
     )
     ap.add_argument("--profile", help="Profile name from profiles.json")
-    ap.add_argument(
-        "--evidence_csv", help="CSV path with columns claim,evidence,status,notes"
-    )
-    ap.add_argument(
-        "--tag", action="append", help="Add front-matter tag key=value (repeatable)"
-    )
+    ap.add_argument("--evidence_csv", help="CSV path with columns claim,evidence,status,notes")
+    ap.add_argument("--tag", action="append", help="Add front-matter tag key=value (repeatable)")
     ap.add_argument("--out", help="Output path (.md)")
     args = ap.parse_args()
 
@@ -304,9 +296,7 @@ def main():
         os.makedirs(os.path.dirname(out_path) or ".", exist_ok=True)
     else:
         safe_proj = (
-            "".join(
-                ch for ch in args.project if ch.isalnum() or ch in ("-", "_")
-            ).strip()
+            "".join(ch for ch in args.project if ch.isalnum() or ch in ("-", "_")).strip()
             or "Project"
         )
         stamp = TODAY
