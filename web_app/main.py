@@ -16,8 +16,15 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from fastapi import (BackgroundTasks, FastAPI, File, Form, HTTPException,
-                     Request, UploadFile)
+from fastapi import (
+    BackgroundTasks,
+    FastAPI,
+    File,
+    Form,
+    HTTPException,
+    Request,
+    UploadFile,
+)
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import FileResponse, HTMLResponse
@@ -31,8 +38,13 @@ sys.path.append(
 
 # Import the core blueprint functionality
 try:
-    from blueprint_pro import (assemble, collect_repo_findings, load_profiles,
-                               parse_tags, read_evidence_csv)
+    from blueprint_pro import (
+        assemble,
+        collect_repo_findings,
+        load_profiles,
+        parse_tags,
+        read_evidence_csv,
+    )
     from docscore import score as calculate_score
 except ImportError as e:
     print(f"Error importing blueprint modules: {e}")
@@ -42,9 +54,12 @@ except ImportError as e:
 from app_analyzer import app_analyzer
 from content_generator import content_generator
 from export_utils import document_exporter
-from monitoring import (HealthChecker, monitor, structured_logger,
-                        track_performance)
-# Import standards checker, export utilities, content generator, and app analyzer
+from monitoring import (
+    HealthChecker,
+    monitor,
+    structured_logger,
+    track_performance,
+)
 from standards_checker import standards_checker
 
 # Rate limiting setup
