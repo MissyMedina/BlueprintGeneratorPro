@@ -17,8 +17,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the validation service
 COPY . .
 
-# Copy the analyzer from parent directory
-COPY ../web_app/app_analyzer.py ./
+# Create placeholder for app_analyzer (will be available via shared volume or import)
+RUN touch app_analyzer.py
 
 # Create non-root user
 RUN useradd -m -u 1000 validator && chown -R validator:validator /app

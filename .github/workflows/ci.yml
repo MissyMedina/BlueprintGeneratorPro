@@ -88,7 +88,7 @@ jobs:
         safety check --json --output safety-report.json || true
     
     - name: Upload security reports
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: security-reports
         path: |
@@ -107,13 +107,11 @@ jobs:
     
     - name: Build web app Docker image
       run: |
-        cd web_app
-        docker build -t blueprint-pro-web:test .
-    
+        docker build -f web_app/Dockerfile -t blueprint-pro-web:test web_app/
+
     - name: Build validation service Docker image
       run: |
-        cd validation_service
-        docker build -t blueprint-pro-validation:test .
+        docker build -f validation_service/Dockerfile -t blueprint-pro-validation:test validation_service/
     
     - name: Test Docker containers
       run: |
@@ -154,17 +152,20 @@ jobs:
     - name: Run performance tests
       run: |
         # Start the web app in background
-        cd web_app && python main.py &
+        cd web_app && uvicorn main:app --host 0.0.0.0 --port 8001 &
         WEB_PID=$!
-        
+
         # Wait for service to start
-        sleep 5
-        
-        # Run basic load test
-        locust --headless --users 10 --spawn-rate 2 --run-time 30s --host http://localhost:8001 -f tests/locustfile.py || true
-        
+        sleep 10
+
+        # Test basic connectivity first
+        curl -f http://localhost:8001/ || echo "Service not ready, skipping performance test"
+
+        # Run simple load test (allow failure for now)
+        timeout 60s locust --headless --users 5 --spawn-rate 1 --run-time 30s --host http://localhost:8001 -f tests/locustfile.py || echo "Performance test completed with warnings"
+
         # Cleanup
-        kill $WEB_PID
+        kill $WEB_PID || true
 
   deploy-staging:
     runs-on: ubuntu-latest

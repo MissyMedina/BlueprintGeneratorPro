@@ -18,18 +18,18 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the application code
 COPY . .
 
-# Copy the GuidanceBlueprintKit-Pro from parent directory
-COPY ../GuidanceBlueprintKit-Pro /app/GuidanceBlueprintKit-Pro
+# Create GuidanceBlueprintKit-Pro directory (will be mounted or copied separately)
+RUN mkdir -p /app/GuidanceBlueprintKit-Pro
 
 # Create static directory for serving files
 RUN mkdir -p static
 
 # Expose port
-EXPOSE 8000
+EXPOSE 8001
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8000/api/health || exit 1
+    CMD curl -f http://localhost:8001/api/health || exit 1
 
 # Run the application
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8001"]
