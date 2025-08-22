@@ -13,9 +13,16 @@ Examples:
   python blueprint_pro.py --project "BlockSense" --modules claims,operator --claims_scope reliability --tag sprint=34 --tag owner=missy
 """
 
-import argparse, os, sys, json, datetime, csv, re
+import argparse
+import csv
+import datetime
+import json
+import os
+import re
+import sys
 
 TODAY = datetime.date.today().isoformat()
+
 
 def load_profiles():
     here = os.path.dirname(os.path.abspath(__file__))
@@ -25,13 +32,15 @@ def load_profiles():
             return json.load(f)
     return {}
 
+
 def parse_tags(tag_list):
     tags = {}
     for t in tag_list or []:
         if "=" in t:
-            k,v = t.split("=",1)
+            k, v = t.split("=", 1)
             tags[k.strip()] = v.strip()
     return tags
+
 
 HEADER = """---
 generated: {today}
@@ -54,6 +63,7 @@ SCOPE = """## 0) Scope & Context
 
 """
 
+
 def claims_table(scope, rows):
     header = f"""## 1) Reality Check — Claims vs. Reality ({scope})
 
@@ -64,8 +74,14 @@ def claims_table(scope, rows):
 """
     if not rows:
         return header + "|  |  |  |  |\n\n" + ARCH_SNAPSHOT
-    body = "".join([f"| {r.get('claim','')} | {r.get('evidence','')} | {r.get('status','')} | {r.get('notes','')} |\n" for r in rows])
+    body = "".join(
+        [
+            f"| {r.get('claim','')} | {r.get('evidence','')} | {r.get('status','')} | {r.get('notes','')} |\n"
+            for r in rows
+        ]
+    )
     return header + body + "\n" + ARCH_SNAPSHOT
+
 
 ARCH_SNAPSHOT = """### Architecture & Readiness Snapshot
 - **Design & Boundaries:** [loose or tight coupling, clear seams?]
@@ -169,11 +185,18 @@ APPENDICES = """## 5) Appendices
 - **Operator Refresh:** add request scaffolds → enforce loop → quality gates.
 """
 
+
 def assemble(project, modules, claims_scope, evidence_rows, tags):
     extra_tags = ""
-    for k,v in (tags or {}).items():
+    for k, v in (tags or {}).items():
         extra_tags += f"{k}: {v}\n"
-    md = HEADER.format(today=TODAY, project=project, modules=",".join(modules), claims_scope=claims_scope, extra_tags=extra_tags)
+    md = HEADER.format(
+        today=TODAY,
+        project=project,
+        modules=",".join(modules),
+        claims_scope=claims_scope,
+        extra_tags=extra_tags,
+    )
     md += SCOPE.format(project=project, today=TODAY)
     if "claims" in modules:
         md += claims_table(claims_scope, evidence_rows)
@@ -187,30 +210,55 @@ def assemble(project, modules, claims_scope, evidence_rows, tags):
         md += APPENDICES
     return md
 
+
 def read_evidence_csv(fp):
     rows = []
-    if not fp: return rows
+    if not fp:
+        return rows
     with open(fp, "r", encoding="utf-8") as f:
         for r in csv.DictReader(f):
-            rows.append({
-                "claim": r.get("claim","").strip(),
-                "evidence": r.get("evidence","").strip(),
-                "status": r.get("status","").strip(),
-                "notes": r.get("notes","").strip()
-            })
+            rows.append(
+                {
+                    "claim": r.get("claim", "").strip(),
+                    "evidence": r.get("evidence", "").strip(),
+                    "status": r.get("status", "").strip(),
+                    "notes": r.get("notes", "").strip(),
+                }
+            )
     return rows
+
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--repo", help="Path to repo to auto-extract evidence (optional, non-fatal)")
+    ap.add_argument(
+        "--repo", help="Path to repo to auto-extract evidence (optional, non-fatal)"
+    )
     ap.add_argument("--max_findings", type=int, default=50, help="Limit auto findings")
     ap.add_argument("--skip_categories", help="Comma list: security,tests")
     ap.add_argument("--project", required=True)
-    ap.add_argument("--modules", help="Comma list: claims,prd,operator,identity,appendices")
-    ap.add_argument("--claims_scope", choices=["app","security","data","performance","reliability","privacy","compliance","ux"])
+    ap.add_argument(
+        "--modules", help="Comma list: claims,prd,operator,identity,appendices"
+    )
+    ap.add_argument(
+        "--claims_scope",
+        choices=[
+            "app",
+            "security",
+            "data",
+            "performance",
+            "reliability",
+            "privacy",
+            "compliance",
+            "ux",
+        ],
+    )
     ap.add_argument("--profile", help="Profile name from profiles.json")
-    ap.add_argument("--evidence_csv", help="CSV path with columns claim,evidence,status,notes")
-    ap.add_argument("--tag", action="append", help="Add front-matter tag key=value (repeatable)")
+    ap.add_argument(
+        "--evidence_csv", help="CSV path with columns claim,evidence,status,notes"
+    )
+    ap.add_argument(
+        "--tag", action="append", help="Add front-matter tag key=value (repeatable)"
+    )
     ap.add_argument("--out", help="Output path (.md)")
     args = ap.parse_args()
 
@@ -221,21 +269,30 @@ def main():
     if args.profile:
         p = profs.get(args.profile)
         if not p:
-            print(f"Unknown profile: {args.profile}. Known: {', '.join(profs.keys())}", file=sys.stderr); sys.exit(2)
+            print(
+                f"Unknown profile: {args.profile}. Known: {', '.join(profs.keys())}",
+                file=sys.stderr,
+            )
+            sys.exit(2)
         modules = p["modules"]
         scope = p["claims_scope"]
 
     if args.modules:
         modules = [m.strip().lower() for m in args.modules.split(",") if m.strip()]
     if not modules:
-        print("No modules selected. Use --profile or --modules.", file=sys.stderr); sys.exit(2)
+        print("No modules selected. Use --profile or --modules.", file=sys.stderr)
+        sys.exit(2)
 
     if args.claims_scope:
         scope = args.claims_scope
     if not scope:
         scope = "app"
 
-    auto_rows = collect_repo_findings(args.repo, args.skip_categories, args.max_findings) if args.repo else []
+    auto_rows = (
+        collect_repo_findings(args.repo, args.skip_categories, args.max_findings)
+        if args.repo
+        else []
+    )
     csv_rows = read_evidence_csv(args.evidence_csv)
     evidence_rows = _merge_evidence(auto_rows, csv_rows)
     tags = parse_tags(args.tag)
@@ -246,7 +303,12 @@ def main():
         out_path = args.out
         os.makedirs(os.path.dirname(out_path) or ".", exist_ok=True)
     else:
-        safe_proj = "".join(ch for ch in args.project if ch.isalnum() or ch in ("-","_")).strip() or "Project"
+        safe_proj = (
+            "".join(
+                ch for ch in args.project if ch.isalnum() or ch in ("-", "_")
+            ).strip()
+            or "Project"
+        )
         stamp = TODAY
         mslug = "-".join(modules)
         out_path = f"{stamp}-{safe_proj}-{mslug}.md"
@@ -257,10 +319,10 @@ def main():
     print(f"Wrote {out_path}")
 
 
-
 # ---------------- Repo Evidence Extractor (safe & optional) ----------------
 
 SAFE_MAX_BYTES = 1_000_000  # per file soft limit
+
 
 def _safe_read(fp):
     try:
@@ -270,6 +332,7 @@ def _safe_read(fp):
             return f.read()
     except Exception:
         return ""
+
 
 def _glob(root, patterns):
     matches = []
@@ -281,164 +344,210 @@ def _glob(root, patterns):
                     break
     return matches
 
+
 def _scan_openapi(root):
     findings = []
     for fp in _glob(root, ["openapi.yaml", "openapi.yml", "swagger.json"]):
         txt = _safe_read(fp)
-        if not txt: 
+        if not txt:
             continue
         # auth presence
         if re.search(r"securitySchemes", txt, re.I):
-            findings.append({
-                "claim": "OpenAPI defines security schemes",
-                "evidence": f"{fp}: securitySchemes present",
-                "status": "✅",
-                "notes": "Auth defined at spec level"
-            })
+            findings.append(
+                {
+                    "claim": "OpenAPI defines security schemes",
+                    "evidence": f"{fp}: securitySchemes present",
+                    "status": "✅",
+                    "notes": "Auth defined at spec level",
+                }
+            )
         # unsecured endpoints (very heuristic)
         if re.search(r"paths:|\"paths\"", txt):
-            if re.search(r"security:\s*\[\s*\]\s*", txt) or re.search(r"\"security\"\s*:\s*\[\s*\]", txt):
-                findings.append({
-                    "claim": "Some endpoints allow anonymous access",
-                    "evidence": f"{fp}: empty security arrays detected",
-                    "status": "⚠️",
-                    "notes": "Verify health probes/webhooks"
-                })
+            if re.search(r"security:\s*\[\s*\]\s*", txt) or re.search(
+                r"\"security\"\s*:\s*\[\s*\]", txt
+            ):
+                findings.append(
+                    {
+                        "claim": "Some endpoints allow anonymous access",
+                        "evidence": f"{fp}: empty security arrays detected",
+                        "status": "⚠️",
+                        "notes": "Verify health probes/webhooks",
+                    }
+                )
     return findings
+
 
 def _scan_dependencies(root):
     findings = []
     # Python
     for fp in _glob(root, ["requirements.txt", "Pipfile", "Pipfile.lock"]):
         txt = _safe_read(fp)
-        if not txt: 
+        if not txt:
             continue
         if "==" not in txt:
-            findings.append({
-                "claim": "Dependencies are pinned",
-                "evidence": f"{fp}: missing exact pins for some packages",
-                "status": "⚠️",
-                "notes": "Prefer exact versions for reproducibility"
-            })
+            findings.append(
+                {
+                    "claim": "Dependencies are pinned",
+                    "evidence": f"{fp}: missing exact pins for some packages",
+                    "status": "⚠️",
+                    "notes": "Prefer exact versions for reproducibility",
+                }
+            )
         else:
-            findings.append({
-                "claim": "Dependencies use exact version pins",
-                "evidence": f"{fp} contains '=='",
-                "status": "✅",
-                "notes": "Good for reproducible builds"
-            })
+            findings.append(
+                {
+                    "claim": "Dependencies use exact version pins",
+                    "evidence": f"{fp} contains '=='",
+                    "status": "✅",
+                    "notes": "Good for reproducible builds",
+                }
+            )
     # Node
     for fp in _glob(root, ["package.json"]):
         txt = _safe_read(fp)
-        if not txt: 
+        if not txt:
             continue
-        if re.search(r'\"\^|\"~', txt):
-            findings.append({
-                "claim": "Node dependencies are pinned",
-                "evidence": f"{fp}: found ^ or ~ version ranges",
-                "status": "⚠️",
-                "notes": "Replace ranges with exact versions for determinism"
-            })
+        if re.search(r"\"\^|\"~", txt):
+            findings.append(
+                {
+                    "claim": "Node dependencies are pinned",
+                    "evidence": f"{fp}: found ^ or ~ version ranges",
+                    "status": "⚠️",
+                    "notes": "Replace ranges with exact versions for determinism",
+                }
+            )
         else:
-            findings.append({
-                "claim": "Node dependencies use exact versions",
-                "evidence": f"{fp}: no ^ or ~ detected",
-                "status": "✅",
-                "notes": "Deterministic installs"
-            })
+            findings.append(
+                {
+                    "claim": "Node dependencies use exact versions",
+                    "evidence": f"{fp}: no ^ or ~ detected",
+                    "status": "✅",
+                    "notes": "Deterministic installs",
+                }
+            )
     return findings
+
 
 def _scan_env_and_secrets(root):
     findings = []
     for fp in _glob(root, [".env", ".env.example", "config.yml", "config.yaml"]):
         txt = _safe_read(fp)
-        if not txt: 
+        if not txt:
             continue
         if re.search(r"(?i)(secret|api[_-]?key|token)\s*[:=]\s*[^\s]+", txt):
-            findings.append({
-                "claim": "Secrets are stored securely",
-                "evidence": f"{fp}: inline secrets detected",
-                "status": "❌",
-                "notes": "Move to a secrets manager; never store plaintext secrets"
-            })
+            findings.append(
+                {
+                    "claim": "Secrets are stored securely",
+                    "evidence": f"{fp}: inline secrets detected",
+                    "status": "❌",
+                    "notes": "Move to a secrets manager; never store plaintext secrets",
+                }
+            )
         else:
-            findings.append({
-                "claim": "No plaintext secrets committed",
-                "evidence": f"{fp}: no inline secrets found",
-                "status": "✅",
-                "notes": "Still verify via repo history"
-            })
+            findings.append(
+                {
+                    "claim": "No plaintext secrets committed",
+                    "evidence": f"{fp}: no inline secrets found",
+                    "status": "✅",
+                    "notes": "Still verify via repo history",
+                }
+            )
     return findings
+
 
 def _scan_docker(root):
     findings = []
     for fp in _glob(root, ["Dockerfile", "Dockerfile.*"]):
         txt = _safe_read(fp)
-        if not txt: 
+        if not txt:
             continue
         if re.search(r"FROM\s+.+:latest", txt, re.I):
-            findings.append({
-                "claim": "Base image uses immutable (pinned) tag",
-                "evidence": f"{fp}: uses ':latest'",
-                "status": "⚠️",
-                "notes": "Pin to a digest or fixed version tag"
-            })
+            findings.append(
+                {
+                    "claim": "Base image uses immutable (pinned) tag",
+                    "evidence": f"{fp}: uses ':latest'",
+                    "status": "⚠️",
+                    "notes": "Pin to a digest or fixed version tag",
+                }
+            )
         else:
-            findings.append({
-                "claim": "Base image is pinned",
-                "evidence": f"{fp}: no ':latest' detected",
-                "status": "✅",
-                "notes": "Good for reproducible builds"
-            })
+            findings.append(
+                {
+                    "claim": "Base image is pinned",
+                    "evidence": f"{fp}: no ':latest' detected",
+                    "status": "✅",
+                    "notes": "Good for reproducible builds",
+                }
+            )
     return findings
+
 
 def _scan_ci(root):
     findings = []
     for fp in _glob(root, [".github/workflows/.*\.yml", ".github/workflows/.*\.yaml"]):
         txt = _safe_read(fp)
-        if not txt: 
+        if not txt:
             continue
         if re.search(r"trivy|snyk|bandit|semgrep|codeql", txt, re.I):
-            findings.append({
-                "claim": "CI includes security scans",
-                "evidence": f"{fp}: scan tool referenced",
-                "status": "✅",
-                "notes": "Security scanning configured"
-            })
+            findings.append(
+                {
+                    "claim": "CI includes security scans",
+                    "evidence": f"{fp}: scan tool referenced",
+                    "status": "✅",
+                    "notes": "Security scanning configured",
+                }
+            )
         else:
-            findings.append({
-                "claim": "CI includes security scans",
-                "evidence": f"{fp}: no common scanners found",
-                "status": "⚠️",
-                "notes": "Add SAST/DAST or dependency scans"
-            })
+            findings.append(
+                {
+                    "claim": "CI includes security scans",
+                    "evidence": f"{fp}: no common scanners found",
+                    "status": "⚠️",
+                    "notes": "Add SAST/DAST or dependency scans",
+                }
+            )
     return findings
+
 
 def _scan_tests(root):
     findings = []
-    for fp in _glob(root, ["pytest.ini", "pyproject.toml", "package.json", "jest.config.js", "jest.config.cjs"]):
+    for fp in _glob(
+        root,
+        [
+            "pytest.ini",
+            "pyproject.toml",
+            "package.json",
+            "jest.config.js",
+            "jest.config.cjs",
+        ],
+    ):
         txt = _safe_read(fp)
-        if not txt: 
+        if not txt:
             continue
         if re.search(r"cov|coverage|nyc", txt, re.I):
-            findings.append({
-                "claim": "Coverage tooling is configured",
-                "evidence": f"{fp}: coverage/nyc keywords present",
-                "status": "✅",
-                "notes": "Collect reports and set thresholds"
-            })
+            findings.append(
+                {
+                    "claim": "Coverage tooling is configured",
+                    "evidence": f"{fp}: coverage/nyc keywords present",
+                    "status": "✅",
+                    "notes": "Collect reports and set thresholds",
+                }
+            )
     # presence of acceptance or e2e tests
     for dirpath, _, files in os.walk(root):
         for name in files:
             if re.search(r"(acceptance|e2e).*\.(py|js|ts|sh)$", name, re.I):
-                findings.append({
-                    "claim": "Acceptance/E2E tests exist",
-                    "evidence": os.path.join(dirpath, name),
-                    "status": "✅",
-                    "notes": "Hook to Acceptance Harness"
-                })
+                findings.append(
+                    {
+                        "claim": "Acceptance/E2E tests exist",
+                        "evidence": os.path.join(dirpath, name),
+                        "status": "✅",
+                        "notes": "Hook to Acceptance Harness",
+                    }
+                )
                 break
     return findings
+
 
 def collect_repo_findings(root, skip_categories=None, max_findings=50):
     try:
@@ -459,8 +568,10 @@ def collect_repo_findings(root, skip_categories=None, max_findings=50):
     # fold to max
     return allf[:max_findings]
 
+
 def _merge_evidence(auto_rows, csv_rows):
     return (auto_rows or []) + (csv_rows or [])
+
 
 if __name__ == "__main__":
     main()

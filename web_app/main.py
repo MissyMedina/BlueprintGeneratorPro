@@ -4,45 +4,52 @@ Guidance Blueprint Kit Pro - Web Application
 FastAPI backend for the professional documentation generator
 """
 
-from fastapi import FastAPI, HTTPException, UploadFile, File, Form, BackgroundTasks, Request
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.trustedhost import TrustedHostMiddleware
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse, FileResponse
-from pydantic import BaseModel, Field
-from typing import List, Optional, Dict, Any
-import time
-from collections import defaultdict
+import json
 import os
+import shutil
 import sys
 import tempfile
-import shutil
-import json
+import time
 import uuid
+from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+from fastapi import (BackgroundTasks, FastAPI, File, Form, HTTPException,
+                     Request, UploadFile)
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel, Field
 
 # Add the GuidanceBlueprintKit-Pro directory to the path
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'GuidanceBlueprintKit-Pro'))
+sys.path.append(
+    os.path.join(os.path.dirname(__file__), "..", "GuidanceBlueprintKit-Pro")
+)
 
 # Import the core blueprint functionality
 try:
-    from blueprint_pro import assemble, read_evidence_csv, load_profiles, parse_tags, collect_repo_findings
+    from blueprint_pro import (assemble, collect_repo_findings, load_profiles,
+                               parse_tags, read_evidence_csv)
     from docscore import score as calculate_score
 except ImportError as e:
     print(f"Error importing blueprint modules: {e}")
     print("Make sure the GuidanceBlueprintKit-Pro directory is accessible")
     sys.exit(1)
 
+from app_analyzer import app_analyzer
+from content_generator import content_generator
+from export_utils import document_exporter
+from monitoring import (HealthChecker, monitor, structured_logger,
+                        track_performance)
 # Import standards checker, export utilities, content generator, and app analyzer
 from standards_checker import standards_checker
-from export_utils import document_exporter
-from content_generator import content_generator
-from app_analyzer import app_analyzer
-from monitoring import monitor, track_performance, HealthChecker, structured_logger
 
 # Rate limiting setup
 rate_limit_storage = defaultdict(list)
+
 
 def custom_rate_limiter(request: Request, calls: int = 10, period: int = 60):
     """Custom rate limiter implementation"""
@@ -51,7 +58,8 @@ def custom_rate_limiter(request: Request, calls: int = 10, period: int = 60):
 
     # Clean old requests
     rate_limit_storage[client_ip] = [
-        req_time for req_time in rate_limit_storage[client_ip]
+        req_time
+        for req_time in rate_limit_storage[client_ip]
         if current_time - req_time < period
     ]
 
@@ -59,22 +67,22 @@ def custom_rate_limiter(request: Request, calls: int = 10, period: int = 60):
     if len(rate_limit_storage[client_ip]) >= calls:
         raise HTTPException(
             status_code=429,
-            detail=f"Rate limit exceeded: {calls} requests per {period} seconds"
+            detail=f"Rate limit exceeded: {calls} requests per {period} seconds",
         )
 
     # Add current request
     rate_limit_storage[client_ip].append(current_time)
 
+
 app = FastAPI(
     title="Blueprint Generator Pro",
     description="Professional documentation generator for PRDs, READMEs, MVPs, and validation documents",
-    version="1.0.0"
+    version="1.0.0",
 )
 
 # Security middleware
 app.add_middleware(
-    TrustedHostMiddleware,
-    allowed_hosts=["localhost", "127.0.0.1", "*.localhost"]
+    TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1", "*.localhost"]
 )
 
 # CORS middleware for frontend integration
@@ -86,6 +94,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 # Security headers middleware
 @app.middleware("http")
 async def add_security_headers(request: Request, call_next):
@@ -95,7 +104,9 @@ async def add_security_headers(request: Request, call_next):
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["X-XSS-Protection"] = "1; mode=block"
-    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    response.headers["Strict-Transport-Security"] = (
+        "max-age=31536000; includeSubDomains"
+    )
     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
     response.headers["Content-Security-Policy"] = (
         "default-src 'self'; "
@@ -108,8 +119,10 @@ async def add_security_headers(request: Request, call_next):
 
     return response
 
+
 # Serve static files
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
 
 # Pydantic models for API
 class GenerationRequest(BaseModel):
@@ -118,10 +131,15 @@ class GenerationRequest(BaseModel):
     claims_scope: str = Field(default="app", description="Scope for claims module")
     profile: Optional[str] = Field(None, description="Profile name to use")
     tags: Optional[Dict[str, str]] = Field(None, description="Custom tags")
-    evidence_data: Optional[List[Dict[str, str]]] = Field(None, description="Evidence rows")
+    evidence_data: Optional[List[Dict[str, str]]] = Field(
+        None, description="Evidence rows"
+    )
     repo_scan: bool = Field(False, description="Whether to scan uploaded repository")
-    skip_categories: Optional[List[str]] = Field(None, description="Categories to skip in repo scan")
+    skip_categories: Optional[List[str]] = Field(
+        None, description="Categories to skip in repo scan"
+    )
     max_findings: int = Field(50, description="Maximum findings from repo scan")
+
 
 class GenerationResponse(BaseModel):
     success: bool
@@ -130,15 +148,19 @@ class GenerationResponse(BaseModel):
     quality_score: Dict[str, Any]
     filename: str
 
+
 class ProfilesResponse(BaseModel):
     profiles: Dict[str, Any]
+
 
 class HealthResponse(BaseModel):
     status: str
     version: str
 
+
 # In-memory storage for generated documents (use database in production)
 generated_documents = {}
+
 
 @app.get("/", response_class=HTMLResponse)
 async def root():
@@ -146,10 +168,12 @@ async def root():
     with open("templates/index.html", "r") as f:
         return f.read()
 
+
 @app.get("/api/health", response_model=HealthResponse)
 async def health_check():
     """Health check endpoint"""
     return HealthResponse(status="healthy", version="1.0.0")
+
 
 @app.get("/api/health/detailed")
 async def detailed_health_check():
@@ -158,16 +182,22 @@ async def detailed_health_check():
     dependencies = HealthChecker.check_dependencies()
 
     return {
-        "status": "healthy" if health["status"] == "healthy" and dependencies["status"] == "healthy" else "unhealthy",
+        "status": (
+            "healthy"
+            if health["status"] == "healthy" and dependencies["status"] == "healthy"
+            else "unhealthy"
+        ),
         "system": health,
         "dependencies": dependencies,
-        "performance": monitor.get_stats()
+        "performance": monitor.get_stats(),
     }
+
 
 @app.get("/api/metrics")
 async def get_metrics():
     """Get application performance metrics"""
     return monitor.get_stats()
+
 
 @app.get("/api/profiles", response_model=ProfilesResponse)
 async def get_profiles():
@@ -177,6 +207,7 @@ async def get_profiles():
         return ProfilesResponse(profiles=profiles)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error loading profiles: {str(e)}")
+
 
 @app.get("/api/standards")
 async def get_standards():
@@ -193,13 +224,16 @@ async def get_standards():
                     "last_updated": std.last_updated.isoformat(),
                     "description": std.description,
                     "severity": std.severity,
-                    "compliance_items": std.compliance_items
+                    "compliance_items": std.compliance_items,
                 }
                 for name, std in standards.items()
-            }
+            },
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error checking standards: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error checking standards: {str(e)}"
+        )
+
 
 @app.get("/api/standards/checklist/{scope}")
 async def get_standards_checklist(scope: str):
@@ -211,10 +245,13 @@ async def get_standards_checklist(scope: str):
             "success": True,
             "scope": scope,
             "checklist": checklist,
-            "count": len(checklist)
+            "count": len(checklist),
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error generating checklist: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error generating checklist: {str(e)}"
+        )
+
 
 @app.post("/api/generate", response_model=GenerationResponse)
 async def generate_document(request: GenerationRequest, http_request: Request):
@@ -227,17 +264,19 @@ async def generate_document(request: GenerationRequest, http_request: Request):
         profiles = load_profiles()
         modules = request.modules
         claims_scope = request.claims_scope
-        
+
         if request.profile:
             if request.profile not in profiles:
-                raise HTTPException(status_code=400, detail=f"Unknown profile: {request.profile}")
+                raise HTTPException(
+                    status_code=400, detail=f"Unknown profile: {request.profile}"
+                )
             profile_data = profiles[request.profile]
             modules = profile_data["modules"]
             claims_scope = profile_data["claims_scope"]
-        
+
         if not modules:
             raise HTTPException(status_code=400, detail="No modules specified")
-        
+
         # Prepare evidence rows
         evidence_rows = request.evidence_data or []
 
@@ -245,38 +284,44 @@ async def generate_document(request: GenerationRequest, http_request: Request):
         if "claims" in modules:
             try:
                 standards = await standards_checker.check_all_standards()
-                standards_evidence = standards_checker.generate_compliance_checklist(standards, claims_scope)
-                evidence_rows.extend(standards_evidence[:10])  # Limit to 10 items to avoid overwhelming
+                standards_evidence = standards_checker.generate_compliance_checklist(
+                    standards, claims_scope
+                )
+                evidence_rows.extend(
+                    standards_evidence[:10]
+                )  # Limit to 10 items to avoid overwhelming
             except Exception as e:
                 print(f"Warning: Could not load standards evidence: {e}")
-        
+
         # Extract intelligent context from tags
-        doc_type = request.tags.get('doc_type', 'prd') if request.tags else 'prd'
-        project_type = request.tags.get('project_type', 'web-app') if request.tags else 'web-app'
-        description = request.tags.get('description', '') if request.tags else ''
+        doc_type = request.tags.get("doc_type", "prd") if request.tags else "prd"
+        project_type = (
+            request.tags.get("project_type", "web-app") if request.tags else "web-app"
+        )
+        description = request.tags.get("description", "") if request.tags else ""
 
         # Extract custom answers from tags
         custom_answers = {}
         if request.tags:
             for key, value in request.tags.items():
-                if key not in ['doc_type', 'project_type', 'description']:
+                if key not in ["doc_type", "project_type", "description"]:
                     custom_answers[key] = value
 
         # Generate intelligent, contextual content
-        if doc_type == 'prd':
+        if doc_type == "prd":
             markdown_content = content_generator.generate_prd_content(
                 project_name=request.project,
                 project_type=project_type,
                 description=description,
                 custom_answers=custom_answers,
-                focus_area=claims_scope
+                focus_area=claims_scope,
             )
-        elif doc_type == 'readme':
+        elif doc_type == "readme":
             markdown_content = content_generator.generate_readme_content(
                 project_name=request.project,
                 project_type=project_type,
                 description=description,
-                custom_answers=custom_answers
+                custom_answers=custom_answers,
             )
         else:
             # Fallback to original system for other doc types
@@ -285,34 +330,42 @@ async def generate_document(request: GenerationRequest, http_request: Request):
                 modules=modules,
                 claims_scope=claims_scope,
                 evidence_rows=evidence_rows,
-                tags=request.tags
+                tags=request.tags,
             )
-        
+
         # Calculate quality score
         quality_score = calculate_score(markdown_content)
-        
+
         # Generate unique document ID and filename
         doc_id = str(uuid.uuid4())
-        safe_project = "".join(ch for ch in request.project if ch.isalnum() or ch in ("-", "_")).strip() or "Project"
+        safe_project = (
+            "".join(
+                ch for ch in request.project if ch.isalnum() or ch in ("-", "_")
+            ).strip()
+            or "Project"
+        )
         filename = f"{safe_project}-{'-'.join(modules)}.md"
-        
+
         # Store the document (in production, use a database)
         generated_documents[doc_id] = {
             "content": markdown_content,
             "filename": filename,
-            "quality_score": quality_score
+            "quality_score": quality_score,
         }
-        
+
         return GenerationResponse(
             success=True,
             document_id=doc_id,
             markdown_content=markdown_content,
             quality_score=quality_score,
-            filename=filename
+            filename=filename,
         )
-        
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error generating document: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error generating document: {str(e)}"
+        )
+
 
 @app.get("/api/document/{document_id}")
 async def get_document(document_id: str):
@@ -323,15 +376,14 @@ async def get_document(document_id: str):
     doc = generated_documents[document_id]
 
     # Create a temporary file to return
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.md', delete=False) as temp_file:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".md", delete=False) as temp_file:
         temp_file.write(doc["content"])
         temp_file_path = temp_file.name
 
     return FileResponse(
-        path=temp_file_path,
-        filename=doc["filename"],
-        media_type="text/markdown"
+        path=temp_file_path, filename=doc["filename"], media_type="text/markdown"
     )
+
 
 @app.get("/api/export/{document_id}/{export_format}")
 async def export_document(document_id: str, export_format: str):
@@ -340,7 +392,10 @@ async def export_document(document_id: str, export_format: str):
         raise HTTPException(status_code=404, detail="Document not found")
 
     if export_format not in document_exporter.supported_formats:
-        raise HTTPException(status_code=400, detail=f"Unsupported format. Supported: {document_exporter.supported_formats}")
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unsupported format. Supported: {document_exporter.supported_formats}",
+        )
 
     doc = generated_documents[document_id]
     metadata = {
@@ -348,7 +403,7 @@ async def export_document(document_id: str, export_format: str):
         "generated": datetime.now().isoformat(),
         "modules": "unknown",
         "claims_scope": "app",
-        "quality_score": doc["quality_score"]
+        "quality_score": doc["quality_score"],
     }
 
     try:
@@ -359,31 +414,34 @@ async def export_document(document_id: str, export_format: str):
         elif export_format == "html":
             content = document_exporter.export_html(doc["content"], metadata)
             media_type = "text/html"
-            filename = doc["filename"].replace('.md', '.html')
+            filename = doc["filename"].replace(".md", ".html")
         elif export_format == "json":
             content = document_exporter.export_json(doc["content"], metadata)
             media_type = "application/json"
-            filename = doc["filename"].replace('.md', '.json')
+            filename = doc["filename"].replace(".md", ".json")
         elif export_format == "txt":
             content = document_exporter.export_text(doc["content"], metadata)
             media_type = "text/plain"
-            filename = doc["filename"].replace('.md', '.txt')
+            filename = doc["filename"].replace(".md", ".txt")
         else:
             raise HTTPException(status_code=400, detail="Invalid format")
 
         # Create temporary file
-        with tempfile.NamedTemporaryFile(mode='w', suffix=f'.{export_format}', delete=False) as temp_file:
+        with tempfile.NamedTemporaryFile(
+            mode="w", suffix=f".{export_format}", delete=False
+        ) as temp_file:
             temp_file.write(content)
             temp_file_path = temp_file.name
 
         return FileResponse(
-            path=temp_file_path,
-            filename=filename,
-            media_type=media_type
+            path=temp_file_path, filename=filename, media_type=media_type
         )
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error exporting document: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error exporting document: {str(e)}"
+        )
+
 
 @app.get("/api/share/{document_id}")
 async def share_document(document_id: str):
@@ -400,20 +458,27 @@ async def share_document(document_id: str):
             "success": True,
             "share_url": share_url,
             "qr_code": qr_code,
-            "document_id": document_id
+            "document_id": document_id,
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error creating share link: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error creating share link: {str(e)}"
+        )
+
 
 @app.post("/api/analyze-app")
 async def analyze_application(file: UploadFile = File(...)):
     """Analyze an existing application codebase from uploaded file"""
-    if not file.filename.endswith(('.zip', '.tar.gz', '.tar')):
-        raise HTTPException(status_code=400, detail="Only ZIP and TAR files are supported")
+    if not file.filename.endswith((".zip", ".tar.gz", ".tar")):
+        raise HTTPException(
+            status_code=400, detail="Only ZIP and TAR files are supported"
+        )
 
     try:
         # Save uploaded file temporarily
-        with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(file.filename)[1]) as temp_file:
+        with tempfile.NamedTemporaryFile(
+            delete=False, suffix=os.path.splitext(file.filename)[1]
+        ) as temp_file:
             shutil.copyfileobj(file.file, temp_file)
             temp_file_path = temp_file.name
 
@@ -426,13 +491,15 @@ async def analyze_application(file: UploadFile = File(...)):
 
             # Generate comprehensive report
             project_name = os.path.splitext(file.filename)[0]
-            analysis_report = app_analyzer.generate_analysis_report(analysis, project_name)
+            analysis_report = app_analyzer.generate_analysis_report(
+                analysis, project_name
+            )
 
             return {
                 "success": True,
                 "analysis": analysis,
                 "report": analysis_report,
-                "filename": f"{project_name}-analysis.md"
+                "filename": f"{project_name}-analysis.md",
             }
 
         finally:
@@ -440,7 +507,10 @@ async def analyze_application(file: UploadFile = File(...)):
             os.unlink(temp_file_path)
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error analyzing application: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error analyzing application: {str(e)}"
+        )
+
 
 @app.post("/api/analyze-local-folder")
 async def analyze_local_folder(request: dict):
@@ -465,17 +535,22 @@ async def analyze_local_folder(request: dict):
             "success": True,
             "analysis": analysis,
             "report": analysis_report,
-            "filename": f"{folder_name}-analysis.md"
+            "filename": f"{folder_name}-analysis.md",
         }
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error analyzing local folder: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error analyzing local folder: {str(e)}"
+        )
+
 
 @app.post("/api/upload-repo")
 async def upload_repository(file: UploadFile = File(...)):
     """Upload and analyze a repository for evidence extraction"""
-    if not file.filename.endswith(('.zip', '.tar.gz', '.tar')):
-        raise HTTPException(status_code=400, detail="Only ZIP and TAR files are supported")
+    if not file.filename.endswith((".zip", ".tar.gz", ".tar")):
+        raise HTTPException(
+            status_code=400, detail="Only ZIP and TAR files are supported"
+        )
 
     try:
         # Create temporary directory
@@ -496,15 +571,19 @@ async def upload_repository(file: UploadFile = File(...)):
                     "claim": "Repository uploaded successfully",
                     "evidence": f"File: {file.filename}",
                     "status": "✅",
-                    "notes": "Ready for analysis"
+                    "notes": "Ready for analysis",
                 }
             ]
 
             return {"success": True, "findings": findings}
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error processing repository: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error processing repository: {str(e)}"
+        )
+
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8001)

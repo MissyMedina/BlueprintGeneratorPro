@@ -4,34 +4,36 @@ Export utilities for multiple output formats
 Supports Markdown, HTML, PDF, and JSON exports
 """
 
-import json
-import tempfile
-import os
-from typing import Dict, Any, Optional
-from datetime import datetime
-import markdown
 import base64
+import json
+import os
+import tempfile
+from datetime import datetime
+from typing import Any, Dict, Optional
+
+import markdown
+
 
 class DocumentExporter:
     """Handle document export in multiple formats"""
-    
+
     def __init__(self):
         self.supported_formats = ["md", "html", "json", "txt"]
-    
+
     def export_markdown(self, content: str, metadata: Dict[str, Any]) -> str:
         """Export as Markdown with front matter"""
         front_matter = "---\n"
         for key, value in metadata.items():
             front_matter += f"{key}: {value}\n"
         front_matter += "---\n\n"
-        
+
         return front_matter + content
-    
+
     def export_html(self, content: str, metadata: Dict[str, Any]) -> str:
         """Export as HTML with styling"""
         # Convert markdown to HTML
-        html_content = markdown.markdown(content, extensions=['tables', 'fenced_code'])
-        
+        html_content = markdown.markdown(content, extensions=["tables", "fenced_code"])
+
         # Create full HTML document
         html_template = f"""
 <!DOCTYPE html>
@@ -164,20 +166,20 @@ class DocumentExporter:
 </body>
 </html>
         """
-        
+
         return html_template
-    
+
     def export_json(self, content: str, metadata: Dict[str, Any]) -> str:
         """Export as structured JSON"""
         export_data = {
             "metadata": metadata,
             "content": content,
             "exported_at": datetime.now().isoformat(),
-            "format_version": "1.0"
+            "format_version": "1.0",
         }
-        
+
         return json.dumps(export_data, indent=2, ensure_ascii=False)
-    
+
     def export_text(self, content: str, metadata: Dict[str, Any]) -> str:
         """Export as plain text"""
         header = f"""
@@ -189,63 +191,70 @@ Modules: {metadata.get('modules', 'N/A')}
 Claims Scope: {metadata.get('claims_scope', 'N/A')}
 
 """
-        
+
         # Remove markdown formatting for plain text
         import re
-        
+
         # Remove markdown headers
-        text_content = re.sub(r'^#+\s*', '', content, flags=re.MULTILINE)
-        
+        text_content = re.sub(r"^#+\s*", "", content, flags=re.MULTILINE)
+
         # Remove markdown links
-        text_content = re.sub(r'\[([^\]]+)\]\([^\)]+\)', r'\1', text_content)
-        
+        text_content = re.sub(r"\[([^\]]+)\]\([^\)]+\)", r"\1", text_content)
+
         # Remove markdown emphasis
-        text_content = re.sub(r'\*\*([^\*]+)\*\*', r'\1', text_content)
-        text_content = re.sub(r'\*([^\*]+)\*', r'\1', text_content)
-        
+        text_content = re.sub(r"\*\*([^\*]+)\*\*", r"\1", text_content)
+        text_content = re.sub(r"\*([^\*]+)\*", r"\1", text_content)
+
         # Remove markdown code blocks
-        text_content = re.sub(r'```[^`]*```', '[CODE BLOCK]', text_content, flags=re.DOTALL)
-        text_content = re.sub(r'`([^`]+)`', r'\1', text_content)
-        
+        text_content = re.sub(
+            r"```[^`]*```", "[CODE BLOCK]", text_content, flags=re.DOTALL
+        )
+        text_content = re.sub(r"`([^`]+)`", r"\1", text_content)
+
         return header + text_content
-    
-    def create_shareable_link(self, document_id: str, base_url: str = "http://localhost:8000") -> str:
+
+    def create_shareable_link(
+        self, document_id: str, base_url: str = "http://localhost:8000"
+    ) -> str:
         """Create a shareable link for the document"""
         return f"{base_url}/share/{document_id}"
-    
+
     def generate_qr_code(self, url: str) -> Optional[str]:
         """Generate QR code for sharing (returns base64 encoded image)"""
         try:
-            import qrcode
             from io import BytesIO
-            
+
+            import qrcode
+
             qr = qrcode.QRCode(version=1, box_size=10, border=5)
             qr.add_data(url)
             qr.make(fit=True)
-            
+
             img = qr.make_image(fill_color="black", back_color="white")
-            
+
             buffer = BytesIO()
-            img.save(buffer, format='PNG')
+            img.save(buffer, format="PNG")
             buffer.seek(0)
-            
+
             return base64.b64encode(buffer.getvalue()).decode()
         except ImportError:
             return None
-    
-    def create_download_package(self, content: str, metadata: Dict[str, Any], formats: list = None) -> str:
+
+    def create_download_package(
+        self, content: str, metadata: Dict[str, Any], formats: list = None
+    ) -> str:
         """Create a ZIP package with multiple formats"""
         if formats is None:
             formats = ["md", "html", "json"]
-        
+
         import zipfile
-        
+
         # Create temporary file for ZIP
-        temp_zip = tempfile.NamedTemporaryFile(delete=False, suffix='.zip')
-        
-        with zipfile.ZipFile(temp_zip.name, 'w') as zipf:
-            project_name = metadata.get('project', 'document').replace(' ', '_')
-            
+        temp_zip = tempfile.NamedTemporaryFile(delete=False, suffix=".zip")
+
+        with zipfile.ZipFile(temp_zip.name, "w") as zipf:
+            project_name = metadata.get("project", "document").replace(" ", "_")
+
             for fmt in formats:
                 if fmt == "md":
                     file_content = self.export_markdown(content, metadata)
@@ -261,10 +270,11 @@ Claims Scope: {metadata.get('claims_scope', 'N/A')}
                     filename = f"{project_name}.txt"
                 else:
                     continue
-                
-                zipf.writestr(filename, file_content.encode('utf-8'))
-        
+
+                zipf.writestr(filename, file_content.encode("utf-8"))
+
         return temp_zip.name
+
 
 # Global instance
 document_exporter = DocumentExporter()

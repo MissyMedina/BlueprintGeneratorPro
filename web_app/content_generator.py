@@ -5,57 +5,145 @@ Based on user inputs and project details rather than generic templates
 """
 
 import re
-from typing import Dict, List, Any, Optional
 from datetime import datetime
+from typing import Any, Dict, List, Optional
+
 
 class ContentGenerator:
     """Generates contextual documentation content based on user inputs"""
-    
+
     def __init__(self):
         self.project_types = {
-            'web-app': {
-                'description': 'web application',
-                'common_features': ['user authentication', 'responsive design', 'API integration', 'database management'],
-                'tech_considerations': ['frontend framework', 'backend API', 'database choice', 'hosting platform'],
-                'security_focus': ['XSS protection', 'CSRF tokens', 'secure authentication', 'data validation']
+            "web-app": {
+                "description": "web application",
+                "common_features": [
+                    "user authentication",
+                    "responsive design",
+                    "API integration",
+                    "database management",
+                ],
+                "tech_considerations": [
+                    "frontend framework",
+                    "backend API",
+                    "database choice",
+                    "hosting platform",
+                ],
+                "security_focus": [
+                    "XSS protection",
+                    "CSRF tokens",
+                    "secure authentication",
+                    "data validation",
+                ],
             },
-            'mobile-app': {
-                'description': 'mobile application',
-                'common_features': ['offline functionality', 'push notifications', 'device integration', 'app store deployment'],
-                'tech_considerations': ['native vs hybrid', 'platform support', 'performance optimization', 'app store guidelines'],
-                'security_focus': ['secure storage', 'API security', 'biometric authentication', 'data encryption']
+            "mobile-app": {
+                "description": "mobile application",
+                "common_features": [
+                    "offline functionality",
+                    "push notifications",
+                    "device integration",
+                    "app store deployment",
+                ],
+                "tech_considerations": [
+                    "native vs hybrid",
+                    "platform support",
+                    "performance optimization",
+                    "app store guidelines",
+                ],
+                "security_focus": [
+                    "secure storage",
+                    "API security",
+                    "biometric authentication",
+                    "data encryption",
+                ],
             },
-            'api': {
-                'description': 'API/backend service',
-                'common_features': ['RESTful endpoints', 'authentication', 'rate limiting', 'documentation'],
-                'tech_considerations': ['API design', 'database architecture', 'scalability', 'monitoring'],
-                'security_focus': ['API authentication', 'input validation', 'rate limiting', 'secure endpoints']
+            "api": {
+                "description": "API/backend service",
+                "common_features": [
+                    "RESTful endpoints",
+                    "authentication",
+                    "rate limiting",
+                    "documentation",
+                ],
+                "tech_considerations": [
+                    "API design",
+                    "database architecture",
+                    "scalability",
+                    "monitoring",
+                ],
+                "security_focus": [
+                    "API authentication",
+                    "input validation",
+                    "rate limiting",
+                    "secure endpoints",
+                ],
             },
-            'desktop': {
-                'description': 'desktop application',
-                'common_features': ['native UI', 'file system access', 'system integration', 'offline functionality'],
-                'tech_considerations': ['cross-platform support', 'installation process', 'auto-updates', 'system requirements'],
-                'security_focus': ['code signing', 'secure updates', 'local data protection', 'privilege management']
+            "desktop": {
+                "description": "desktop application",
+                "common_features": [
+                    "native UI",
+                    "file system access",
+                    "system integration",
+                    "offline functionality",
+                ],
+                "tech_considerations": [
+                    "cross-platform support",
+                    "installation process",
+                    "auto-updates",
+                    "system requirements",
+                ],
+                "security_focus": [
+                    "code signing",
+                    "secure updates",
+                    "local data protection",
+                    "privilege management",
+                ],
             },
-            'library': {
-                'description': 'library/SDK',
-                'common_features': ['clean API', 'comprehensive documentation', 'examples', 'version compatibility'],
-                'tech_considerations': ['API design', 'backward compatibility', 'testing coverage', 'distribution'],
-                'security_focus': ['secure defaults', 'input validation', 'dependency management', 'vulnerability disclosure']
-            }
+            "library": {
+                "description": "library/SDK",
+                "common_features": [
+                    "clean API",
+                    "comprehensive documentation",
+                    "examples",
+                    "version compatibility",
+                ],
+                "tech_considerations": [
+                    "API design",
+                    "backward compatibility",
+                    "testing coverage",
+                    "distribution",
+                ],
+                "security_focus": [
+                    "secure defaults",
+                    "input validation",
+                    "dependency management",
+                    "vulnerability disclosure",
+                ],
+            },
         }
-    
-    def generate_prd_content(self, project_name: str, project_type: str, description: str, 
-                           custom_answers: Dict[str, str], focus_area: str) -> str:
+
+    def generate_prd_content(
+        self,
+        project_name: str,
+        project_type: str,
+        description: str,
+        custom_answers: Dict[str, str],
+        focus_area: str,
+    ) -> str:
         """Generate a comprehensive PRD with actual project-specific content"""
-        
-        project_info = self.project_types.get(project_type, self.project_types['web-app'])
-        
+
+        project_info = self.project_types.get(
+            project_type, self.project_types["web-app"]
+        )
+
         # Extract key information from custom answers
-        target_users = custom_answers.get('target_users', 'end users')
-        main_problem = custom_answers.get('main_problem', 'user needs and business requirements')
-        success_metrics = custom_answers.get('success_metrics', 'user adoption and satisfaction')
-        
+        target_users = custom_answers.get("target_users", "end users")
+        main_problem = custom_answers.get(
+            "main_problem", "user needs and business requirements"
+        )
+        success_metrics = custom_answers.get(
+            "success_metrics", "user adoption and satisfaction"
+        )
+
         content = f"""## Product Requirements Document: {project_name}
 
 ### Executive Summary
@@ -87,28 +175,32 @@ class ContentGenerator:
 
 #### 2.1 Core Features (MUST HAVE)
 """
-        
+
         # Generate specific features based on project type and user input
-        core_features = self._generate_core_features(project_type, custom_answers, focus_area)
+        core_features = self._generate_core_features(
+            project_type, custom_answers, focus_area
+        )
         for i, feature in enumerate(core_features, 1):
             content += f"- **F{i:02d}:** {feature}\n"
-        
+
         content += f"""
 #### 2.2 Enhanced Features (SHOULD HAVE)
 """
-        
-        enhanced_features = self._generate_enhanced_features(project_type, custom_answers, focus_area)
+
+        enhanced_features = self._generate_enhanced_features(
+            project_type, custom_answers, focus_area
+        )
         for i, feature in enumerate(enhanced_features, 1):
             content += f"- **E{i:02d}:** {feature}\n"
-        
+
         content += f"""
 #### 2.3 Future Features (MAY HAVE)
 """
-        
+
         future_features = self._generate_future_features(project_type, custom_answers)
         for i, feature in enumerate(future_features, 1):
             content += f"- **N{i:02d}:** {feature}\n"
-        
+
         content += f"""
 
 ### 3. Technical Requirements
@@ -121,20 +213,20 @@ class ContentGenerator:
 
 #### 3.2 Security Requirements
 """
-        
+
         security_reqs = self._generate_security_requirements(project_type, focus_area)
         for req in security_reqs:
             content += f"- {req}\n"
-        
+
         content += f"""
 
 #### 3.3 Technology Considerations
 """
-        
-        tech_considerations = project_info['tech_considerations']
+
+        tech_considerations = project_info["tech_considerations"]
         for consideration in tech_considerations:
             content += f"- **{consideration.title()}:** To be determined based on team expertise and project requirements\n"
-        
+
         content += f"""
 
 ### 4. User Experience Requirements
@@ -228,106 +320,139 @@ class ContentGenerator:
 **Last Updated:** {datetime.now().strftime('%Y-%m-%d')}  
 **Next Review:** {datetime.now().strftime('%Y-%m-%d')} + 2 weeks
 """
-        
+
         return content
-    
-    def _generate_core_features(self, project_type: str, custom_answers: Dict[str, str], focus_area: str) -> List[str]:
+
+    def _generate_core_features(
+        self, project_type: str, custom_answers: Dict[str, str], focus_area: str
+    ) -> List[str]:
         """Generate project-specific core features"""
-        project_info = self.project_types.get(project_type, self.project_types['web-app'])
-        base_features = project_info['common_features']
-        
+        project_info = self.project_types.get(
+            project_type, self.project_types["web-app"]
+        )
+        base_features = project_info["common_features"]
+
         features = []
-        
+
         # Add base features with context
         for feature in base_features[:3]:  # Take first 3 as core
             features.append(f"{feature.title()} tailored for the target user needs")
-        
+
         # Add focus-specific features
-        if focus_area == 'security':
-            features.extend([
-                "Multi-factor authentication system",
-                "Data encryption at rest and in transit",
-                "Audit logging and compliance reporting"
-            ])
-        elif focus_area == 'performance':
-            features.extend([
-                "Optimized data loading and caching",
-                "Real-time performance monitoring",
-                "Scalable architecture design"
-            ])
-        elif focus_area == 'ux':
-            features.extend([
-                "Intuitive user interface design",
-                "Accessibility compliance (WCAG 2.1)",
-                "Mobile-responsive experience"
-            ])
+        if focus_area == "security":
+            features.extend(
+                [
+                    "Multi-factor authentication system",
+                    "Data encryption at rest and in transit",
+                    "Audit logging and compliance reporting",
+                ]
+            )
+        elif focus_area == "performance":
+            features.extend(
+                [
+                    "Optimized data loading and caching",
+                    "Real-time performance monitoring",
+                    "Scalable architecture design",
+                ]
+            )
+        elif focus_area == "ux":
+            features.extend(
+                [
+                    "Intuitive user interface design",
+                    "Accessibility compliance (WCAG 2.1)",
+                    "Mobile-responsive experience",
+                ]
+            )
         else:  # app (complete)
-            features.extend([
-                "Comprehensive user management",
-                "Robust error handling and recovery",
-                "Extensible plugin architecture"
-            ])
-        
+            features.extend(
+                [
+                    "Comprehensive user management",
+                    "Robust error handling and recovery",
+                    "Extensible plugin architecture",
+                ]
+            )
+
         return features[:6]  # Limit to 6 core features
-    
-    def _generate_enhanced_features(self, project_type: str, custom_answers: Dict[str, str], focus_area: str) -> List[str]:
+
+    def _generate_enhanced_features(
+        self, project_type: str, custom_answers: Dict[str, str], focus_area: str
+    ) -> List[str]:
         """Generate enhanced features based on project context"""
         features = [
             "Advanced analytics and reporting dashboard",
             "Integration with popular third-party services",
             "Customizable user preferences and settings",
             "Automated backup and recovery system",
-            "Advanced search and filtering capabilities"
+            "Advanced search and filtering capabilities",
         ]
-        
+
         # Add project-type specific enhancements
-        if project_type == 'web-app':
+        if project_type == "web-app":
             features.append("Progressive Web App (PWA) capabilities")
-        elif project_type == 'mobile-app':
+        elif project_type == "mobile-app":
             features.append("Offline synchronization and conflict resolution")
-        elif project_type == 'api':
+        elif project_type == "api":
             features.append("GraphQL endpoint with flexible querying")
-        
+
         return features[:5]  # Limit to 5 enhanced features
-    
-    def _generate_future_features(self, project_type: str, custom_answers: Dict[str, str]) -> List[str]:
+
+    def _generate_future_features(
+        self, project_type: str, custom_answers: Dict[str, str]
+    ) -> List[str]:
         """Generate future/nice-to-have features"""
         return [
             "AI-powered recommendations and insights",
             "Advanced workflow automation",
             "Multi-language and internationalization support",
             "Advanced collaboration features",
-            "Machine learning-based optimization"
+            "Machine learning-based optimization",
         ]
-    
-    def _generate_security_requirements(self, project_type: str, focus_area: str) -> List[str]:
+
+    def _generate_security_requirements(
+        self, project_type: str, focus_area: str
+    ) -> List[str]:
         """Generate security requirements based on project type and focus"""
-        project_info = self.project_types.get(project_type, self.project_types['web-app'])
-        base_security = project_info['security_focus']
-        
+        project_info = self.project_types.get(
+            project_type, self.project_types["web-app"]
+        )
+        base_security = project_info["security_focus"]
+
         requirements = []
         for req in base_security:
-            requirements.append(f"**{req.title()}:** Implementation required with industry best practices")
-        
+            requirements.append(
+                f"**{req.title()}:** Implementation required with industry best practices"
+            )
+
         # Add focus-specific security requirements
-        if focus_area == 'security':
-            requirements.extend([
-                "**Penetration Testing:** Regular third-party security assessments",
-                "**Compliance:** GDPR, SOC2, and relevant industry standards",
-                "**Incident Response:** Documented security incident response plan"
-            ])
-        
+        if focus_area == "security":
+            requirements.extend(
+                [
+                    "**Penetration Testing:** Regular third-party security assessments",
+                    "**Compliance:** GDPR, SOC2, and relevant industry standards",
+                    "**Incident Response:** Documented security incident response plan",
+                ]
+            )
+
         return requirements
 
-    def generate_readme_content(self, project_name: str, project_type: str, description: str,
-                              custom_answers: Dict[str, str]) -> str:
+    def generate_readme_content(
+        self,
+        project_name: str,
+        project_type: str,
+        description: str,
+        custom_answers: Dict[str, str],
+    ) -> str:
         """Generate a comprehensive README with actual project details"""
 
-        project_info = self.project_types.get(project_type, self.project_types['web-app'])
+        project_info = self.project_types.get(
+            project_type, self.project_types["web-app"]
+        )
 
-        installation_method = custom_answers.get('installation_method', 'git clone')
-        main_features = custom_answers.get('main_features', 'Core functionality for user needs')
-        tech_stack = custom_answers.get('tech_stack', 'Modern web technologies')
+        installation_method = custom_answers.get("installation_method", "git clone")
+        main_features = custom_answers.get(
+            "main_features", "Core functionality for user needs"
+        )
+        tech_stack = custom_answers.get("tech_stack", "Modern web technologies")
 
         content = f"""# {project_name}
 
@@ -517,57 +642,64 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
         return content
 
-    def _generate_readme_features(self, project_type: str, custom_answers: Dict[str, str]) -> List[str]:
+    def _generate_readme_features(
+        self, project_type: str, custom_answers: Dict[str, str]
+    ) -> List[str]:
         """Generate README-specific features"""
-        project_info = self.project_types.get(project_type, self.project_types['web-app'])
+        project_info = self.project_types.get(
+            project_type, self.project_types["web-app"]
+        )
 
         features = []
-        for feature in project_info['common_features']:
+        for feature in project_info["common_features"]:
             features.append(feature.title())
 
         # Add some generic but useful features
-        features.extend([
-            "Comprehensive documentation",
-            "Easy installation and setup",
-            "Active community support",
-            "Regular updates and maintenance"
-        ])
+        features.extend(
+            [
+                "Comprehensive documentation",
+                "Easy installation and setup",
+                "Active community support",
+                "Regular updates and maintenance",
+            ]
+        )
 
         return features[:6]
 
     def _get_install_command(self, method: str) -> str:
         """Get appropriate install command"""
         commands = {
-            'npm install': 'npm install',
-            'pip install': 'pip install -r requirements.txt',
-            'git clone': 'git clone [repository-url]',
-            'download binary': '# Download from releases page',
-            'docker': 'docker pull [image-name]',
-            'other': '# Follow installation guide'
+            "npm install": "npm install",
+            "pip install": "pip install -r requirements.txt",
+            "git clone": "git clone [repository-url]",
+            "download binary": "# Download from releases page",
+            "docker": "docker pull [image-name]",
+            "other": "# Follow installation guide",
         }
-        return commands.get(method, 'npm install')
+        return commands.get(method, "npm install")
 
     def _get_start_command(self, project_type: str) -> str:
         """Get appropriate start command"""
         commands = {
-            'web-app': 'npm start',
-            'mobile-app': 'npm run ios # or npm run android',
-            'api': 'python app.py',
-            'desktop': './app',
-            'library': '# Import in your project'
+            "web-app": "npm start",
+            "mobile-app": "npm run ios # or npm run android",
+            "api": "python app.py",
+            "desktop": "./app",
+            "library": "# Import in your project",
         }
-        return commands.get(project_type, 'npm start')
+        return commands.get(project_type, "npm start")
 
     def _generate_usage_example(self, project_type: str, project_name: str) -> str:
         """Generate usage example"""
         examples = {
-            'web-app': f'# Open browser to http://localhost:3000\n# Login and explore {project_name} features',
-            'mobile-app': f'# Install on device and launch\n# Complete onboarding flow',
-            'api': f'curl -X GET http://localhost:8000/api/v1/status',
-            'desktop': f'./{project_name.lower()} --help',
-            'library': f'import {project_name.lower().replace(" ", "_")}\n{project_name.lower().replace(" ", "_")}.initialize()'
+            "web-app": f"# Open browser to http://localhost:3000\n# Login and explore {project_name} features",
+            "mobile-app": f"# Install on device and launch\n# Complete onboarding flow",
+            "api": f"curl -X GET http://localhost:8000/api/v1/status",
+            "desktop": f"./{project_name.lower()} --help",
+            "library": f'import {project_name.lower().replace(" ", "_")}\n{project_name.lower().replace(" ", "_")}.initialize()',
         }
-        return examples.get(project_type, f'# Start using {project_name}')
+        return examples.get(project_type, f"# Start using {project_name}")
+
 
 # Global instance
 content_generator = ContentGenerator()
